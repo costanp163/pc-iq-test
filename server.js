@@ -27,6 +27,19 @@ const participantSchema = new mongoose.Schema({
 // Update the model if you haven't already
 const Participant = mongoose.model('Participant', participantSchema);
 
+// 1. Initial Data Submission (Page 1)
+app.post('/submit-data', async (req, res) => {
+    try {
+        console.log("Creating new participant:", req.body);
+        const newUser = new Participant(req.body);
+        await newUser.save();
+        res.status(200).send('Success');
+    } catch (error) {
+        console.error("Submission Error:", error);
+        res.status(500).send('Database Error');
+    }
+});
+
 // 3. The Route
 app.post('/submit-prediction', async (req, res) => {
     try {

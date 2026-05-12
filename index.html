@@ -160,14 +160,15 @@
     // NEW: Logic for the "Quick Question" page
 document.getElementById('final-next').addEventListener('click', function() {
     const experienceValue = document.getElementById('experience').value;
-    const nameValue = document.getElementById('full-name').value; // We use the name as the key to find the user
+    
+    // We grab the name here so it's not empty!
+    const nameValue = document.getElementById('full-name').value; 
 
     const updatedData = {
         name: nameValue,
         hasTakenBefore: experienceValue
     };
 
-    // Change button state
     this.textContent = "Saving...";
     this.disabled = true;
 
@@ -178,34 +179,25 @@ document.getElementById('final-next').addEventListener('click', function() {
     })
     .then(response => {
         if (response.ok) {
-            alert("Data updated! You are ready for the test.");
-            // Here is where you would transition to the actual IQ questions later
+            // Hides the "Quick Question" and shows "Prediction"
+            document.getElementById('screen-test').style.display = 'none';
+            document.getElementById('prediction-page').style.display = 'block';
         } else {
             alert("Update failed.");
             this.disabled = false;
             this.textContent = "Next";
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("Connection error.");
     });
 });
 
 // Logic for the Prediction Page
-const nameValue = document.getElementById('full-name').value;
-
-function goToNextSection() {
-    // Hide prediction page and show the first IQ question
-    document.getElementById('prediction-page').style.display = 'none';
-    document.getElementById('iq-test-section').style.display = 'block'; 
-}
 
 // SUBMIT BUTTON
 document.getElementById('submit-prediction').addEventListener('click', function() {
+    // Grab name inside the click
+    const nameValue = document.getElementById('full-name').value; 
     const prediction = parseInt(document.getElementById('predicted-input').value);
     
-    // VALIDATION: If it's valid, send to server. If not, just skip the save and move on.
     if (prediction >= 50 && prediction <= 180) {
         fetch('https://pc-iq-test.onrender.com/submit-prediction', {
             method: 'POST',
@@ -215,7 +207,6 @@ document.getElementById('submit-prediction').addEventListener('click', function(
             goToNextSection();
         });
     } else {
-        // Invalid data: simply continue without storing
         goToNextSection();
     }
 });
