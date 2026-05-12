@@ -30,7 +30,6 @@
         h1 { margin-bottom: 5px; color: #2c3e50; }
         h3 { margin-top: 0; color: #7f8c8d; font-weight: 400; margin-bottom: 30px; }
 
-        /* Form Styling */
         .form-group {
             text-align: left;
             margin-bottom: 15px;
@@ -48,7 +47,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
-            box-sizing: border-box; /* Ensures padding doesn't break width */
+            box-sizing: border-box;
             font-size: 1rem;
         }
 
@@ -77,18 +76,15 @@
     <div id="screen-welcome">
         <h1>P.C. IQ Test</h1>
         <h3>Iteration 1</h3>
-
         <form id="welcome-form">
             <div class="form-group">
                 <label for="full-name">Full Name (First and Last)</label>
                 <input type="text" id="full-name" placeholder="e.g. John Doe" required>
             </div>
-
             <div class="form-group">
                 <label for="age">Age</label>
                 <input type="number" id="age" min="1" max="120" placeholder="Your age" required>
             </div>
-
             <div class="form-group">
                 <label for="sex">Sex</label>
                 <select id="sex" required>
@@ -98,7 +94,6 @@
                     <option value="other">Other / Prefer not to say</option>
                 </select>
             </div>
-
             <button type="submit">Next</button>
         </form>
     </div>
@@ -116,7 +111,7 @@
         <button id="final-next">Next</button>
     </div>
 
-    <!-- SCREEN 3: THE PREDICTION PAGE (Now safely inside the card) -->
+    <!-- SCREEN 3: THE PREDICTION PAGE -->
     <div id="prediction-page" style="display:none;">
         <h1>Prediction</h1>
         <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px;">
@@ -136,26 +131,21 @@
     </div>
 </div>
 
-<div id="prediction-page" style="display:none;">
-    <h2>What score do you think you will get?</h2>
-    <p><i>(Optional)</i></p>
-    <input type="number" id="predicted-input" placeholder="Enter score (50-180)">
-    <br><br>
-    <button id="submit-prediction">Submit</button>
-    <button id="skip-prediction">Skip</button>
-</div>
-
 <script>
+    function goToNextSection() {
+        document.getElementById('prediction-page').style.display = 'none';
+        document.getElementById('iq-test-section').style.display = 'block'; 
+    }
+
+    // WELCOME FORM SUBMISSION
     document.getElementById('welcome-form').addEventListener('submit', function(event) {
         event.preventDefault();
-        
         const userData = {
             name: document.getElementById('full-name').value,
             age: document.getElementById('age').value,
             sex: document.getElementById('sex').value
         };
 
-        // Send data to Render (Your existing logic)
         fetch('https://pc-iq-test.onrender.com/submit-data', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -163,78 +153,52 @@
         })
         .then(response => {
             if (response.ok) {
-                // SUCCESS: Switch the screens!
                 document.getElementById('screen-welcome').style.display = 'none';
                 document.getElementById('screen-test').style.display = 'block';
             } else {
                 alert("Server error. Try again.");
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("Could not connect to server.");
         });
     });
 
-    // NEW: Logic for the "Quick Question" page
-document.getElementById('final-next').addEventListener('click', function() {
-    const experienceValue = document.getElementById('experience').value;
-    
-    // We grab the name here so it's not empty!
-    const nameValue = document.getElementById('full-name').value; 
+    // QUICK QUESTION SUBMISSION
+    document.getElementById('final-next').addEventListener('click', function() {
+        const experienceValue = document.getElementById('experience').value;
+        const nameValue = document.getElementById('full-name').value; 
 
-    const updatedData = {
-        name: nameValue,
-        hasTakenBefore: experienceValue
-    };
-
-    this.textContent = "Saving...";
-    this.disabled = true;
-
-    fetch('https://pc-iq-test.onrender.com/update-experience', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData)
-    })
-    .then(response => {
-        if (response.ok) {
-            // Hides the "Quick Question" and shows "Prediction"
-            document.getElementById('screen-test').style.display = 'none';
-            document.getElementById('prediction-page').style.display = 'block';
-        } else {
-            alert("Update failed.");
-            this.disabled = false;
-            this.textContent = "Next";
-        }
-    });
-});
-
-// Logic for the Prediction Page
-
-// SUBMIT BUTTON
-document.getElementById('submit-prediction').addEventListener('click', function() {
-    // Grab name inside the click
-    const nameValue = document.getElementById('full-name').value; 
-    const prediction = parseInt(document.getElementById('predicted-input').value);
-    
-    if (prediction >= 50 && prediction <= 180) {
-        fetch('https://pc-iq-test.onrender.com/submit-prediction', {
+        fetch('https://pc-iq-test.onrender.com/update-experience', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: nameValue, predictedScore: prediction })
-        }).finally(() => {
-            goToNextSection();
+            body: JSON.stringify({ name: nameValue, hasTakenBefore: experienceValue })
+        })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById('screen-test').style.display = 'none';
+                document.getElementById('prediction-page').style.display = 'block';
+            }
         });
-    } else {
+    });
+
+    // PREDICTION SUBMISSION
+    document.getElementById('submit-prediction').addEventListener('click', function() {
+        const nameValue = document.getElementById('full-name').value; 
+        const prediction = parseInt(document.getElementById('predicted-input').value);
+        
+        if (prediction >= 50 && prediction <= 180) {
+            fetch('https://pc-iq-test.onrender.com/submit-prediction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: nameValue, predictedScore: prediction })
+            }).finally(() => { goToNextSection(); });
+        } else {
+            goToNextSection();
+        }
+    });
+
+    // SKIP BUTTON
+    document.getElementById('skip-prediction').addEventListener('click', function() {
         goToNextSection();
-    }
-});
-
-// SKIP BUTTON
-document.getElementById('skip-prediction').addEventListener('click', function() {
-    goToNextSection();
-});
-
+    });
 </script>
 
 </body>
