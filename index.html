@@ -147,6 +147,41 @@
             alert("Could not connect to server.");
         });
     });
+
+    // NEW: Logic for the "Quick Question" page
+document.getElementById('final-next').addEventListener('click', function() {
+    const experienceValue = document.getElementById('experience').value;
+    const nameValue = document.getElementById('full-name').value; // We use the name as the key to find the user
+
+    const updatedData = {
+        name: nameValue,
+        hasTakenBefore: experienceValue
+    };
+
+    // Change button state
+    this.textContent = "Saving...";
+    this.disabled = true;
+
+    fetch('https://pc-iq-test.onrender.com/update-experience', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Data updated! You are ready for the test.");
+            // Here is where you would transition to the actual IQ questions later
+        } else {
+            alert("Update failed.");
+            this.disabled = false;
+            this.textContent = "Next";
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Connection error.");
+    });
+});
 </script>
 
 </body>

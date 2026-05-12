@@ -18,6 +18,7 @@ const participantSchema = new mongoose.Schema({
     name: String,
     age: Number,
     sex: String,
+    hasTakenBefore: String, // Added this field
     score: { type: Number, default: 0 },
     date: { type: Date, default: Date.now }
 });
@@ -37,7 +38,28 @@ app.post('/submit-data', async (req, res) => {
         res.status(500).send("Database Error: " + error.message);
     }
 });
+app.post('/update-experience', async (req, res) => {
+    try {
+        const { name, hasTakenBefore } = req.body;
+        
+        // Find the user by name and update their experience field
+        const updatedUser = await Participant.findOneAndUpdate(
+            { name: name }, 
+            { hasTakenBefore: hasTakenBefore },
+            { new: true }
+        );
 
+        if (updatedUser) {
+            console.log("Updated experience for:", name);
+            res.status(200).send('Updated successfully');
+        } else {
+            res.status(404).send('User not found');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+});
 // This line tells the code: "Use Render's port, or 3000 if I'm testing at home"
 const PORT = process.env.PORT || 3000;
 
