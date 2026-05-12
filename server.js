@@ -27,12 +27,14 @@ const Participant = mongoose.model('Participant', participantSchema);
 // 3. The Route
 app.post('/submit-data', async (req, res) => {
     try {
-        const newParticipant = new Participant(req.body);
-        await newParticipant.save();
-        console.log("Saved to Cloud:", newParticipant.name);
-        res.status(200).send({ message: "Data saved to the Cloud!", id: newParticipant._id });
-    } catch (err) {
-        res.status(500).send({ error: "Failed to save data." });
+        console.log("Attempting to save:", req.body);
+        const newUser = new Participant(req.body); // Make sure this matches your model name!
+        await newUser.save();
+        res.status(200).send('Success');
+    } catch (error) {
+        // This will print the EXACT reason to your Render Logs
+        console.error("MONGODB ERROR:", error); 
+        res.status(500).send("Database Error: " + error.message);
     }
 });
 
