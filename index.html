@@ -117,6 +117,15 @@
     </div>
 </div>
 
+<div id="prediction-page" style="display:none;">
+    <h2>What score do you think you will get?</h2>
+    <p><i>(Optional)</i></p>
+    <input type="number" id="predicted-input" placeholder="Enter score (50-180)">
+    <br><br>
+    <button id="submit-prediction">Submit</button>
+    <button id="skip-prediction">Skip</button>
+</div>
+
 <script>
     document.getElementById('welcome-form').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -182,6 +191,40 @@ document.getElementById('final-next').addEventListener('click', function() {
         alert("Connection error.");
     });
 });
+
+// Logic for the Prediction Page
+const nameValue = document.getElementById('full-name').value;
+
+function goToNextSection() {
+    // Hide prediction page and show the first IQ question
+    document.getElementById('prediction-page').style.display = 'none';
+    document.getElementById('iq-test-section').style.display = 'block'; 
+}
+
+// SUBMIT BUTTON
+document.getElementById('submit-prediction').addEventListener('click', function() {
+    const prediction = parseInt(document.getElementById('predicted-input').value);
+    
+    // VALIDATION: If it's valid, send to server. If not, just skip the save and move on.
+    if (prediction >= 50 && prediction <= 180) {
+        fetch('https://pc-iq-test.onrender.com/submit-prediction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: nameValue, predictedScore: prediction })
+        }).finally(() => {
+            goToNextSection();
+        });
+    } else {
+        // Invalid data: simply continue without storing
+        goToNextSection();
+    }
+});
+
+// SKIP BUTTON
+document.getElementById('skip-prediction').addEventListener('click', function() {
+    goToNextSection();
+});
+
 </script>
 
 </body>

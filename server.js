@@ -18,24 +18,29 @@ const participantSchema = new mongoose.Schema({
     name: String,
     age: Number,
     sex: String,
-    hasTakenBefore: String, // Added this field
+    hasTakenBefore: String,
+    predictedScore: Number, // New field
     score: { type: Number, default: 0 },
     date: { type: Date, default: Date.now }
 });
 
+// Update the model if you haven't already
 const Participant = mongoose.model('Participant', participantSchema);
 
 // 3. The Route
-app.post('/submit-data', async (req, res) => {
+app.post('/submit-prediction', async (req, res) => {
     try {
-        console.log("Attempting to save:", req.body);
-        const newUser = new Participant(req.body); // Make sure this matches your model name!
-        await newUser.save();
-        res.status(200).send('Success');
+        const { name, predictedScore } = req.body;
+        
+        const updatedUser = await Participant.findOneAndUpdate(
+            { name: name }, 
+            { predictedScore: predictedScore },
+            { new: true }
+        );
+
+        res.status(200).send('Prediction processed');
     } catch (error) {
-        // This will print the EXACT reason to your Render Logs
-        console.error("MONGODB ERROR:", error); 
-        res.status(500).send("Database Error: " + error.message);
+        res.status(500).send('Server Error');
     }
 });
 app.post('/update-experience', async (req, res) => {
