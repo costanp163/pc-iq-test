@@ -73,32 +73,48 @@
 <body>
 
 <div class="welcome-card">
-    <h1>P.C. IQ Test</h1>
-    <h3>Iteration 1</h3>
+    <!-- SCREEN 1: THE WELCOME PAGE -->
+    <div id="screen-welcome">
+        <h1>P.C. IQ Test</h1>
+        <h3>Iteration 1</h3>
 
-    <form id="welcome-form">
-        <div class="form-group">
-            <label for="full-name">Full Name (First and Last)</label>
-            <input type="text" id="full-name" placeholder="e.g. John Doe" required>
-        </div>
+        <form id="welcome-form">
+            <div class="form-group">
+                <label for="full-name">Full Name (First and Last)</label>
+                <input type="text" id="full-name" placeholder="e.g. John Doe" required>
+            </div>
 
-        <div class="form-group">
-            <label for="age">Age</label>
-            <input type="number" id="age" min="1" max="120" placeholder="Your age" required>
-        </div>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" min="1" max="120" placeholder="Your age" required>
+            </div>
 
+            <div class="form-group">
+                <label for="sex">Sex</label>
+                <select id="sex" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other / Prefer not to say</option>
+                </select>
+            </div>
+
+            <button type="submit">Next</button>
+        </form>
+    </div>
+
+    <!-- SCREEN 2: THE TEMPORARY TEST PAGE (Initially Hidden) -->
+    <div id="screen-test" style="display: none;">
+        <h1>Quick Question</h1>
         <div class="form-group">
-            <label for="sex">Sex</label>
-            <select id="sex" required>
-                <option value="" disabled selected>Select an option</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other / Prefer not to say</option>
+            <label for="experience">Have you taken an IQ test before?</label>
+            <select id="experience">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
             </select>
         </div>
-
-        <button type="submit">Next</button>
-    </form>
+        <button id="final-next">Next</button>
+    </div>
 </div>
 
 <script>
@@ -111,19 +127,24 @@
             sex: document.getElementById('sex').value
         };
 
-        // NEW: Send data to our local server
-       fetch('https://pc-iq-test.onrender.com/submit-data', { // Added /submit-data here
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(userData)
-})
-        .then(response => response.json())
-        .then(data => {
-            alert("Server says: " + data.message);
+        // Send data to Render (Your existing logic)
+        fetch('https://pc-iq-test.onrender.com/submit-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        })
+        .then(response => {
+            if (response.ok) {
+                // SUCCESS: Switch the screens!
+                document.getElementById('screen-welcome').style.display = 'none';
+                document.getElementById('screen-test').style.display = 'block';
+            } else {
+                alert("Server error. Try again.");
+            }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert("Could not connect to server. Did you start it?");
+            alert("Could not connect to server.");
         });
     });
 </script>
