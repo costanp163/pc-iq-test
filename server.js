@@ -37,7 +37,11 @@ app.post('/submit-data', async (req, res) => {
     }
 });
 
+// This line tells the code: "Use Render's port, or 3000 if I'm testing at home"
 const PORT = process.env.PORT || 3000;
+
+// This line tells the server to listen on "0.0.0.0" 
+// This is required for Render to "see" your app
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
