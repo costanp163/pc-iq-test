@@ -103,7 +103,7 @@
         </form>
     </div>
 
-    <!-- SCREEN 2: THE TEMPORARY TEST PAGE (Initially Hidden) -->
+    <!-- SCREEN 2: THE QUICK QUESTION PAGE -->
     <div id="screen-test" style="display: none;">
         <h1>Quick Question</h1>
         <div class="form-group">
@@ -114,6 +114,25 @@
             </select>
         </div>
         <button id="final-next">Next</button>
+    </div>
+
+    <!-- SCREEN 3: THE PREDICTION PAGE (Now safely inside the card) -->
+    <div id="prediction-page" style="display:none;">
+        <h1>Prediction</h1>
+        <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px;">
+            <i>What score do you think you will get? (Optional)</i>
+        </p>
+        <div class="form-group">
+            <input type="number" id="predicted-input" placeholder="Enter score (50-180)">
+        </div>
+        <button id="submit-prediction">Submit</button>
+        <button id="skip-prediction" style="background-color: #95a5a6; margin-top: 10px;">Skip</button>
+    </div>
+
+    <!-- SCREEN 4: IQ TEST SECTION -->
+    <div id="iq-test-section" style="display:none;">
+        <h1>Test Starting</h1>
+        <p>Prepare yourself...</p>
     </div>
 </div>
 
