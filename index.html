@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P.C. IQ Test - Welcome</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* The Welcome Card */
+        .welcome-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 { margin-bottom: 5px; color: #2c3e50; }
+        h3 { margin-top: 0; color: #7f8c8d; font-weight: 400; margin-bottom: 30px; }
+
+        /* Form Styling */
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box; /* Ensures padding doesn't break width */
+            font-size: 1rem;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="welcome-card">
+    <h1>P.C. IQ Test</h1>
+    <h3>Iteration 1</h3>
+
+    <form id="welcome-form">
+        <div class="form-group">
+            <label for="full-name">Full Name (First and Last)</label>
+            <input type="text" id="full-name" placeholder="e.g. John Doe" required>
+        </div>
+
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" min="1" max="120" placeholder="Your age" required>
+        </div>
+
+        <div class="form-group">
+            <label for="sex">Sex</label>
+            <select id="sex" required>
+                <option value="" disabled selected>Select an option</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other / Prefer not to say</option>
+            </select>
+        </div>
+
+        <button type="submit">Next</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('welcome-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const userData = {
+            name: document.getElementById('full-name').value,
+            age: document.getElementById('age').value,
+            sex: document.getElementById('sex').value
+        };
+
+        // NEW: Send data to our local server
+       fetch('https://pc-iq-test.onrender.com/submit-data', { // Added /submit-data here
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userData)
+})
+        .then(response => response.json())
+        .then(data => {
+            alert("Server says: " + data.message);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Could not connect to server. Did you start it?");
+        });
+    });
+</script>
+
+</body>
+</html>
