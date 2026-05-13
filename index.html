@@ -67,6 +67,16 @@
         button:hover {
             background-color: #2980b9;
         }
+
+/* Add to existing <style> */
+.top-bar { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 20px; }
+.timer { font-size: 1.2rem; font-weight: bold; color: #2c3e50; }
+.timer.warning { color: #e74c3c; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.toggle-btn { background: #ecf0f1; border: 1px solid #bdc3c7; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
+.sequence { font-size: 1.8rem; font-weight: bold; color: #34495e; margin: 20px 0; }
+#answerInput { padding: 10px; width: 80px; text-align: center; font-size: 1.2rem; border: 2px solid #3498db; border-radius: 5px; }
+
     </style>
 </head>
 <body>
@@ -124,6 +134,22 @@
         <button id="skip-prediction" style="background-color: #95a5a6; margin-top: 10px;">Skip</button>
     </div>
 
+    <div id="sequence-page" class="welcome-card" style="display: none;">
+    <header class="top-bar">
+        <button id="toggleTimerBtn" class="toggle-btn">Hide Timer</button>
+        <div id="timerDisplay" class="timer">40s</div>
+    </header>
+
+    <main class="question-container">
+        <h2>Complete the sequence:</h2>
+        <p class="sequence">2, 5, 8, 11, 14, ?</p>
+        
+        <input type="number" id="answerInput" placeholder="?" autocomplete="off">
+        <br><br>
+        <button id="submit-sequence" class="next-btn">Next</button>
+    </main>
+</div>
+
     <!-- SCREEN 4: IQ TEST SECTION -->
     <div id="iq-test-section" style="display:none;">
         <h1>Test Starting</h1>
@@ -132,6 +158,31 @@
 </div>
 
 <script>
+
+let timeLeft = 40;
+let timerInterval;
+let timerHidden = false;
+
+function startSequenceTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timerDisplay').innerText = timeLeft + "s";
+        
+        // Timer behavior: reappear at 6 seconds
+        if (timeLeft <= 6) {
+            document.getElementById('timerDisplay').style.display = 'block';
+            document.getElementById('timerDisplay').classList.add('warning');
+        } else if (timerHidden) {
+            document.getElementById('timerDisplay').style.display = 'none';
+        }
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            processSequenceAnswer(); // Auto-submit
+        }
+    }, 1000);
+}
+
     function goToNextSection() {
         document.getElementById('prediction-page').style.display = 'none';
         document.getElementById('iq-test-section').style.display = 'block'; 
@@ -191,9 +242,41 @@
                 body: JSON.stringify({ name: nameValue, predictedScore: prediction })
             }).finally(() => { goToNextSection(); });
         } else {
-            goToNextSection();
+            // Update your existing goToNextSection function
+function goToNextSection() {
+    document.getElementById('prediction-page').style.display = 'none';
+    document.getElementById('sequence-page').style.display = 'block';
+    startSequenceTimer(); // Start the clock!
+}
         }
     });
+
+// Toggle Timer Visibility
+document.getElementById('toggleTimerBtn').addEventListener('click', function() {
+    timerHidden = !timerHidden;
+    const display = document.getElementById('timerDisplay');
+    display.style.display = timerHidden ? 'none' : 'block';
+    this.innerText = timerHidden ? 'Show Timer' : 'Hide Timer';
+});
+
+// Process Answer
+document.getElementById('submit-sequence').addEventListener('click', processSequenceAnswer);
+
+function processSequenceAnswer() {
+    clearInterval(timerInterval);
+    const rawInput = document.getElementById('answerInput').value;
+    const sanitized = rawInput.trim(); // Removes spaces
+    const isCorrect = (sanitized === "17");
+
+    // Store in Session Storage for now
+    const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
+    results.push({ question: "sequence_1", input: rawInput, correct: isCorrect });
+    sessionStorage.setItem('testResults', JSON.stringify(results));
+
+    // Move to next section (You'll need to define the next ID)
+    document.getElementById('sequence-page').style.display = 'none';
+    // document.getElementById('NEXT_PAGE_ID').style.display = 'block'; 
+}
 
     // SKIP BUTTON
     document.getElementById('skip-prediction').addEventListener('click', function() {
