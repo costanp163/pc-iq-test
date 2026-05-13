@@ -80,6 +80,17 @@
         
         .sequence { font-size: 1.8rem; font-weight: bold; color: #34495e; margin: 20px 0; letter-spacing: 2px;}
         .answer-input { padding: 10px; width: 80px; text-align: center; font-size: 1.2rem; border: 2px solid #3498db; border-radius: 5px; margin: 0 auto; display: block; }
+    
+    /* Multiple Choice Styling */
+        .options-container { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+        .radio-option {
+            background: #f8f9fa; border: 1px solid #ccc; padding: 12px;
+            border-radius: 6px; cursor: pointer; text-align: left; font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+        .radio-option:hover { background: #e2e6ea; }
+        .radio-option input[type="radio"] { margin-right: 15px; transform: scale(1.2); }
+    
     </style>
 </head>
 <body>
@@ -153,6 +164,31 @@
         <p class="sequence">Z, X, V, T, R, ?</p>
         <input type="text" id="answerInput2" class="answer-input" placeholder="?">
         <button id="submit-sequence-2">Next</button>
+    </div>
+
+    <div id="question-page-3" style="display: none;">
+        <header class="top-bar">
+            <button id="toggleTimerBtn3" class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplay3" class="timer">40s</div>
+        </header>
+        <h2>Which does not belong?</h2>
+        
+        <div class="options-container">
+            <label class="radio-option">
+                <input type="radio" name="q3-answer" value="Circle"> Circle
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="q3-answer" value="Square"> Square
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="q3-answer" value="Triangle"> Triangle
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="q3-answer" value="Sphere"> Sphere
+            </label>
+        </div>
+
+        <button id="submit-question-3">Next</button>
     </div>
 
     <div id="final-page" style="display:none;">
@@ -304,8 +340,71 @@
         results.push({ question: "sequence_2", input: raw, correct: isCorrect, timeLeft: timeLeft2 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
 
+        // Move to Question 3 instead of the final page
         document.getElementById('sequence-page-2').style.display = 'none';
-        document.getElementById('final-page').style.display = 'block';
+        document.getElementById('question-page-3').style.display = 'block';
+        startTimer3(); // Start the clock for Q3!
+    }
+
+    // ==========================================
+    // --- QUESTION 3 LOGIC (Multiple Choice) ---
+    // ==========================================
+
+    let timeLeft3 = 40;
+    let timerInterval3;
+    let timerHidden3 = false;
+
+    // Timer Logic for Q3
+    function startTimer3() {
+        timerInterval3 = setInterval(() => {
+            timeLeft3--;
+            document.getElementById('timerDisplay3').innerText = timeLeft3 + "s";
+            
+            if (timeLeft3 <= 6) {
+                document.getElementById('timerDisplay3').style.display = 'block';
+                document.getElementById('timerDisplay3').classList.add('warning');
+            } else if (timerHidden3) {
+                document.getElementById('timerDisplay3').style.display = 'none';
+            }
+
+            if (timeLeft3 <= 0) {
+                clearInterval(timerInterval3);
+                processAnswer3(); // Auto-submit when time's up
+            }
+        }, 1000);
+    }
+
+    // Toggle Timer Button for Q3
+    document.getElementById('toggleTimerBtn3').addEventListener('click', function() {
+        timerHidden3 = !timerHidden3;
+        const display = document.getElementById('timerDisplay3');
+        display.style.display = timerHidden3 ? 'none' : 'block';
+        this.innerText = timerHidden3 ? 'Show Timer' : 'Hide Timer';
+    });
+
+    // Question 3 Answer Submission
+    document.getElementById('submit-question-3').addEventListener('click', processAnswer3);
+
+    function processAnswer3() {
+        clearInterval(timerInterval3); // Stop the clock
+        
+        // Find which radio button was selected
+        const selectedOption = document.querySelector('input[name="q3-answer"]:checked');
+        
+        // If they didn't select anything before time ran out, record it as blank
+        const rawInput = selectedOption ? selectedOption.value : ""; 
+        const isCorrect = (rawInput === "Sphere");
+
+        // Store in Session Storage alongside previous questions
+        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
+        results.push({ question: "logic_3", input: rawInput, correct: isCorrect, timeLeft: timeLeft3 });
+        sessionStorage.setItem('testResults', JSON.stringify(results));
+        
+        console.log("Answer 3 saved!", results);
+
+        // NOW move to the final "Work in Progress" screen
+        document.getElementById('question-page-3').style.display = 'none';
+        document.getElementById('final-page').style.display = 'block'; 
     }
 </script>
 
