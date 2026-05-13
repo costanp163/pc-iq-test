@@ -16,7 +16,7 @@
             margin: 0;
         }
 
-        /* The Welcome Card */
+        /* The Main Wrapper */
         .welcome-card {
             background: white;
             padding: 40px;
@@ -28,6 +28,7 @@
         }
 
         h1 { margin-bottom: 5px; color: #2c3e50; }
+        h2 { margin-bottom: 15px; color: #2c3e50; font-size: 1.5rem; }
         h3 { margin-top: 0; color: #7f8c8d; font-weight: 400; margin-bottom: 30px; }
 
         .form-group {
@@ -70,18 +71,21 @@
 
         /* Timer and Sequence specific styles */
         .top-bar { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .timer { font-size: 1.2rem; font-weight: bold; color: #2c3e50; }
+        .timer { font-size: 1.2rem; font-weight: bold; color: #2c3e50; min-width: 40px; text-align: right;}
         .timer.warning { color: #e74c3c; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
+        
+        /* Fixed Toggle Button Color */
         .toggle-btn { background: #ecf0f1; color: #2c3e50; border: 1px solid #bdc3c7; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; width: auto; margin-top: 0; }
-        .sequence { font-size: 1.8rem; font-weight: bold; color: #34495e; margin: 20px 0; }
-        #answerInput { padding: 10px; width: 80px; text-align: center; font-size: 1.2rem; border: 2px solid #3498db; border-radius: 5px; }
-
+        
+        .sequence { font-size: 1.8rem; font-weight: bold; color: #34495e; margin: 20px 0; letter-spacing: 2px;}
+        .answer-input { padding: 10px; width: 80px; text-align: center; font-size: 1.2rem; border: 2px solid #3498db; border-radius: 5px; margin: 0 auto; display: block; }
     </style>
 </head>
 <body>
 
 <div class="welcome-card">
+    
     <div id="screen-welcome">
         <h1>P.C. IQ Test</h1>
         <h3>Iteration 1</h3>
@@ -136,15 +140,10 @@
             <button id="toggleTimerBtn" class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay" class="timer">40s</div>
         </header>
-
-        <main class="question-container">
-            <h2>Complete the sequence:</h2>
-            <p class="sequence">2, 5, 8, 11, 14, ?</p>
-            
-            <input type="text" id="answerInput" placeholder="?" autocomplete="off">
-            <br><br>
-            <button id="submit-sequence" class="next-btn">Next</button>
-        </main>
+        <h2>Complete the sequence:</h2>
+        <p class="sequence">2, 5, 8, 11, 14, ?</p>
+        <input type="text" id="answerInput" class="answer-input" placeholder="?" autocomplete="off">
+        <button id="submit-sequence">Next</button>
     </div>
 
     <div id="sequence-page-2" style="display: none;">
@@ -152,18 +151,13 @@
             <button id="toggleTimerBtn2" class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay2" class="timer">40s</div>
         </header>
-
-        <main class="question-container">
-            <h2>Complete the sequence:</h2>
-            <p class="sequence">Z, X, V, T, R, ?</p>
-            
-            <input type="text" id="answerInput2" placeholder="?" autocomplete="off">
-            <br><br>
-            <button id="submit-sequence-2" class="next-btn">Next</button>
-        </main>
+        <h2>Complete the sequence:</h2>
+        <p class="sequence">Z, X, V, T, R, ?</p>
+        <input type="text" id="answerInput2" class="answer-input" placeholder="?" autocomplete="off">
+        <button id="submit-sequence-2">Next</button>
     </div>
 
-    <div id="final-page" class="welcome-card" style="display:none;">
+    <div id="final-page" style="display:none;">
         <h1>Work in Progress</h1>
         <p style="color: #7f8c8d; margin-top: 15px;">
             The remainder of this test is currently under construction. 
@@ -171,6 +165,7 @@
             All your responses up to this point have been successfully saved!
         </p>
     </div>
+</div>
 
 <script>
     // --- TIMER VARIABLES ---
@@ -178,38 +173,18 @@
     let timerInterval;
     let timerHidden = false;
 
+    let timeLeft2 = 40;
+    let timerInterval2;
+    let timerHidden2 = false;
+
     // --- FLOW CONTROL ---
-    // Moving from Prediction to the Sequence game
     function goToNextSection() {
         document.getElementById('prediction-page').style.display = 'none';
         document.getElementById('sequence-page').style.display = 'block';
-        startSequenceTimer(); // Start the clock!
+        startSequenceTimer(); 
     }
 
-    // --- TIMER LOGIC ---
-    function startSequenceTimer() {
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            document.getElementById('timerDisplay').innerText = timeLeft + "s";
-            
-            // Timer behavior: reappear at 6 seconds
-            if (timeLeft <= 6) {
-                document.getElementById('timerDisplay').style.display = 'block';
-                document.getElementById('timerDisplay').classList.add('warning');
-            } else if (timerHidden) {
-                document.getElementById('timerDisplay').style.display = 'none';
-            }
-
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                processSequenceAnswer(); // Auto-submit when time's up
-            }
-        }, 1000);
-    }
-
-    // --- EVENT LISTENERS ---
-
-    // 1. WELCOME FORM SUBMISSION
+    // --- API & DB LISTENERS ---
     document.getElementById('welcome-form').addEventListener('submit', function(event) {
         event.preventDefault();
         const userData = {
@@ -222,173 +197,120 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
-        })
-        .then(response => {
+        }).then(response => {
             if (response.ok) {
                 document.getElementById('screen-welcome').style.display = 'none';
                 document.getElementById('screen-test').style.display = 'block';
-            } else {
-                alert("Server error. Try again.");
             }
-        }).catch(err => {
-            // Fallback for local testing if server is down
-            console.error("Fetch failed", err);
+        }).catch(() => {
             document.getElementById('screen-welcome').style.display = 'none';
             document.getElementById('screen-test').style.display = 'block';
         });
     });
 
-    // 2. QUICK QUESTION SUBMISSION
     document.getElementById('final-next').addEventListener('click', function() {
-        const experienceValue = document.getElementById('experience').value;
-        const nameValue = document.getElementById('full-name').value; 
-
+        const exp = document.getElementById('experience').value;
+        const nm = document.getElementById('full-name').value; 
         fetch('https://pc-iq-test.onrender.com/update-experience', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: nameValue, hasTakenBefore: experienceValue })
-        })
-        .then(response => {
-            if (response.ok) {
-                document.getElementById('screen-test').style.display = 'none';
-                document.getElementById('prediction-page').style.display = 'block';
-            }
-        }).catch(err => {
-            // Fallback for local testing
+            body: JSON.stringify({ name: nm, hasTakenBefore: exp })
+        }).finally(() => {
             document.getElementById('screen-test').style.display = 'none';
             document.getElementById('prediction-page').style.display = 'block';
         });
     });
 
-    // 3. PREDICTION SUBMISSION
     document.getElementById('submit-prediction').addEventListener('click', function() {
-        const nameValue = document.getElementById('full-name').value; 
-        const prediction = parseInt(document.getElementById('predicted-input').value);
-        
-        if (prediction >= 50 && prediction <= 180) {
+        const nm = document.getElementById('full-name').value; 
+        const pred = parseInt(document.getElementById('predicted-input').value);
+        if (pred >= 50 && pred <= 180) {
             fetch('https://pc-iq-test.onrender.com/submit-prediction', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: nameValue, predictedScore: prediction })
-            }).finally(() => { 
-                goToNextSection(); 
-            });
+                body: JSON.stringify({ name: nm, predictedScore: pred })
+            }).finally(() => { goToNextSection(); });
         } else {
-            alert("Please enter a valid IQ prediction between 50 and 180, or press Skip.");
+            alert("Enter a score between 50 and 180, or press Skip.");
         }
     });
 
-    // 4. PREDICTION SKIP
-    document.getElementById('skip-prediction').addEventListener('click', function() {
-        goToNextSection();
-    });
+    document.getElementById('skip-prediction').addEventListener('click', goToNextSection);
 
-    // 5. TOGGLE TIMER BUTTON
+    // --- QUESTION 1 LOGIC ---
+    function startSequenceTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timerDisplay').innerText = timeLeft + "s";
+            if (timeLeft <= 6) {
+                document.getElementById('timerDisplay').style.display = 'block';
+                document.getElementById('timerDisplay').classList.add('warning');
+            } else if (timerHidden) {
+                document.getElementById('timerDisplay').style.display = 'none';
+            }
+            if (timeLeft <= 0) { clearInterval(timerInterval); processSequenceAnswer(); }
+        }, 1000);
+    }
+
     document.getElementById('toggleTimerBtn').addEventListener('click', function() {
         timerHidden = !timerHidden;
-        const display = document.getElementById('timerDisplay');
-        display.style.display = timerHidden ? 'none' : 'block';
+        document.getElementById('timerDisplay').style.display = timerHidden ? 'none' : 'block';
         this.innerText = timerHidden ? 'Show Timer' : 'Hide Timer';
     });
 
-    // 6. SEQUENCE ANSWER SUBMISSION
     document.getElementById('submit-sequence').addEventListener('click', processSequenceAnswer);
-
-    // Allow "Enter" key on the sequence input
-    document.getElementById('answerInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            processSequenceAnswer();
-        }
-    });
+    document.getElementById('answerInput').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer(); });
 
     function processSequenceAnswer() {
-        clearInterval(timerInterval); // Stop the clock
-        
-        const rawInput = document.getElementById('answerInput').value;
-        const sanitized = rawInput.replace(/\s+/g, ''); // Removes all spaces safely
-        const isCorrect = (sanitized === "17");
+        clearInterval(timerInterval);
+        const raw = document.getElementById('answerInput').value;
+        const isCorrect = (raw.replace(/\s+/g, '') === "17");
 
-        // Store in Session Storage for now
         const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "sequence_1", input: rawInput, correct: isCorrect, timeLeft: timeLeft });
+        results.push({ question: "sequence_1", input: raw, correct: isCorrect, timeLeft: timeLeft });
         sessionStorage.setItem('testResults', JSON.stringify(results));
-        
-        console.log("Answer saved!", results);
 
-        // Move to the final screen
-      // --- PREVIOUSLY THIS WENT TO FINAL PAGE, NOW IT GOES TO Q2 ---
         document.getElementById('sequence-page').style.display = 'none';
-        document.getElementById('sequence-page-2').style.display = 'block'; 
-        startSequenceTimer2(); // Start the clock for question 2!
+        document.getElementById('sequence-page-2').style.display = 'block';
+        startSequenceTimer2(); 
     }
 
-// ==========================================
-    // --- QUESTION 2 LOGIC (Z, X, V, T, R, ?) ---
-    // ==========================================
-
-    let timeLeft2 = 40;
-    let timerInterval2;
-    let timerHidden2 = false;
-
-    // Timer Logic for Q2
+    // --- QUESTION 2 LOGIC ---
     function startSequenceTimer2() {
         timerInterval2 = setInterval(() => {
             timeLeft2--;
             document.getElementById('timerDisplay2').innerText = timeLeft2 + "s";
-            
             if (timeLeft2 <= 6) {
                 document.getElementById('timerDisplay2').style.display = 'block';
                 document.getElementById('timerDisplay2').classList.add('warning');
             } else if (timerHidden2) {
                 document.getElementById('timerDisplay2').style.display = 'none';
             }
-
-            if (timeLeft2 <= 0) {
-                clearInterval(timerInterval2);
-                processSequenceAnswer2(); // Auto-submit when time's up
-            }
+            if (timeLeft2 <= 0) { clearInterval(timerInterval2); processSequenceAnswer2(); }
         }, 1000);
     }
 
-    // Toggle Timer Button for Q2
     document.getElementById('toggleTimerBtn2').addEventListener('click', function() {
         timerHidden2 = !timerHidden2;
-        const display = document.getElementById('timerDisplay2');
-        display.style.display = timerHidden2 ? 'none' : 'block';
+        document.getElementById('timerDisplay2').style.display = timerHidden2 ? 'none' : 'block';
         this.innerText = timerHidden2 ? 'Show Timer' : 'Hide Timer';
     });
 
-    // Sequence 2 Answer Submission
     document.getElementById('submit-sequence-2').addEventListener('click', processSequenceAnswer2);
-
-    // Allow "Enter" key on the sequence 2 input
-    document.getElementById('answerInput2').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            processSequenceAnswer2();
-        }
-    });
+    document.getElementById('answerInput2').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer2(); });
 
     function processSequenceAnswer2() {
-        clearInterval(timerInterval2); // Stop the clock
-        
-        const rawInput = document.getElementById('answerInput2').value;
-        
-        // Remove spaces and convert to UPPERCASE to allow 'p' or 'P'
-        const sanitized = rawInput.replace(/\s+/g, '').toUpperCase(); 
-        const isCorrect = (sanitized === "P");
+        clearInterval(timerInterval2);
+        const raw = document.getElementById('answerInput2').value;
+        const isCorrect = (raw.replace(/\s+/g, '').toUpperCase() === "P");
 
-        // Store in Session Storage alongside Question 1
         const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "sequence_2", input: rawInput, correct: isCorrect, timeLeft: timeLeft2 });
+        results.push({ question: "sequence_2", input: raw, correct: isCorrect, timeLeft: timeLeft2 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
-        
-        console.log("Answer 2 saved!", results);
 
-        // Move to the final "Work in Progress" screen
         document.getElementById('sequence-page-2').style.display = 'none';
-        document.getElementById('final-page').style.display = 'block'; 
+        document.getElementById('final-page').style.display = 'block';
     }
-
 </script>
 
 </body>
