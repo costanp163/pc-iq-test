@@ -81,41 +81,31 @@
         .sequence { font-size: 1.8rem; font-weight: bold; color: #34495e; margin: 20px 0; letter-spacing: 2px;}
         .answer-input { padding: 10px; width: 80px; text-align: center; font-size: 1.2rem; border: 2px solid #3498db; border-radius: 5px; margin: 0 auto; display: block; }
     
-   /* Multiple Choice Styling - 2x2 Grid Layout */
-.options-container { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; /* This creates the two half-width columns */
-    gap: 15px; 
-    margin: 20px 0; 
-}
+        /* Multiple Choice Styling - 2x2 Grid Layout */
+        .options-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin: 20px 0; 
+        }
 
-.radio-option {
-    background: #f8f9fa; 
-    border: 1px solid #ccc; 
-    padding: 25px 10px; /* Makes the box taller and square-like */
-    border-radius: 6px; 
-    cursor: pointer; 
-    font-size: 1.1rem;
-    transition: background 0.2s;
-    
-    /* Flex settings to stack text on top and dot on bottom */
-    display: flex;
-    flex-direction: column-reverse; /* Flips the HTML order so span is above input */
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
+        .radio-option {
+            background: #f8f9fa; 
+            border: 1px solid #ccc; 
+            padding: 25px 10px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 1.1rem;
+            transition: background 0.2s;
+            display: flex;
+            flex-direction: column-reverse; 
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
 
-.radio-option:hover { 
-    background: #e2e6ea; 
-}
-
-.radio-option input[type="radio"] { 
-    margin-left: 0; 
-    margin-top: 15px; /* Adds space between the text and the dot */
-    transform: scale(1.3); 
-    cursor: pointer;
-}
+        .radio-option:hover { background: #e2e6ea; }
+        .radio-option input[type="radio"] { margin-left: 0; margin-top: 15px; transform: scale(1.3); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -192,33 +182,33 @@
     </div>
 
     <div id="question-page-3" style="display: none;">
-    <header class="top-bar">
-        <button id="toggleTimerBtn3" class="toggle-btn">Hide Timer</button>
-        <div id="timerDisplay3" class="timer">40s</div>
-    </header>
-    <h2>Which does not belong?</h2>
-    
-    <div class="options-container">
-        <label class="radio-option">
-            <input type="radio" name="q3-answer" value="Sphere">
-            <span>Sphere</span>
-        </label>
-        <label class="radio-option">
-            <input type="radio" name="q3-answer" value="Circle">
-            <span>Circle</span>
-        </label>
-        <label class="radio-option">
-            <input type="radio" name="q3-answer" value="Square">
-            <span>Square</span>
-        </label>
-        <label class="radio-option">
-            <input type="radio" name="q3-answer" value="Triangle">
-            <span>Triangle</span>
-        </label>
-    </div>
+        <header class="top-bar">
+            <button id="toggleTimerBtn3" class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplay3" class="timer">40s</div>
+        </header>
+        <h2>Which does not belong?</h2>
+        
+        <div class="options-container">
+            <label class="radio-option">
+                <input type="radio" name="q3-answer" value="Sphere">
+                <span>Sphere</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="q3-answer" value="Circle">
+                <span>Circle</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="q3-answer" value="Square">
+                <span>Square</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="q3-answer" value="Triangle">
+                <span>Triangle</span>
+            </label>
+        </div>
 
-    <button id="submit-question-3">Next</button>
-</div>
+        <button id="submit-question-3">Next</button>
+    </div>
 
     <div id="final-page" style="display:none;">
         <h1>Work in Progress</h1>
@@ -227,21 +217,19 @@
 
 </div> 
 
-
 <script>
     // --- GLOBAL TIMER STATE ---
-// This ensures if a user hides the timer once, it stays hidden across all questions.
-let globalTimerHidden = false; 
+    let globalTimerHidden = false; 
 
-// Question Specific Timers
-let timeLeft = 40;
-let timerInterval;
+    // Question Specific Timers
+    let timeLeft = 40;
+    let timerInterval;
 
-let timeLeft2 = 40;
-let timerInterval2;
+    let timeLeft2 = 40;
+    let timerInterval2;
 
-let timeLeft3 = 40;
-let timerInterval3;
+    let timeLeft3 = 40;
+    let timerInterval3;
 
     // --- FLOW CONTROL ---
     function goToNextSection() {
@@ -303,15 +291,23 @@ let timerInterval3;
 
     document.getElementById('skip-prediction').addEventListener('click', goToNextSection);
 
+    // ==========================================
     // --- QUESTION 1 LOGIC ---
+    // ==========================================
     function startSequenceTimer() {
+        if (globalTimerHidden) {
+            document.getElementById('timerDisplay').style.display = 'none';
+            document.getElementById('toggleTimerBtn').innerText = 'Show Timer';
+        }
+
         timerInterval = setInterval(() => {
             timeLeft--;
             document.getElementById('timerDisplay').innerText = timeLeft + "s";
+            
             if (timeLeft <= 6) {
                 document.getElementById('timerDisplay').style.display = 'block';
                 document.getElementById('timerDisplay').classList.add('warning');
-            } else if (timerHidden) {
+            } else if (globalTimerHidden) {
                 document.getElementById('timerDisplay').style.display = 'none';
             }
             if (timeLeft <= 0) { clearInterval(timerInterval); processSequenceAnswer(); }
@@ -319,10 +315,10 @@ let timerInterval3;
     }
 
     document.getElementById('toggleTimerBtn').addEventListener('click', function() {
-    globalTimerHidden = !globalTimerHidden;
-    document.getElementById('timerDisplay').style.display = globalTimerHidden ? 'none' : 'block';
-    this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-});
+        globalTimerHidden = !globalTimerHidden;
+        document.getElementById('timerDisplay').style.display = globalTimerHidden ? 'none' : 'block';
+        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
+    });
 
     document.getElementById('submit-sequence').addEventListener('click', processSequenceAnswer);
     document.getElementById('answerInput').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer(); });
@@ -341,20 +337,23 @@ let timerInterval3;
         startSequenceTimer2(); 
     }
 
+    // ==========================================
     // --- QUESTION 2 LOGIC ---
+    // ==========================================
     function startSequenceTimer2() {
-if (globalTimerHidden) {
-        document.getElementById('timerDisplay2').style.display = 'none';
-        document.getElementById('toggleTimerBtn2').innerText = 'Show Timer';
-    }
+        if (globalTimerHidden) {
+            document.getElementById('timerDisplay2').style.display = 'none';
+            document.getElementById('toggleTimerBtn2').innerText = 'Show Timer';
+        }
 
         timerInterval2 = setInterval(() => {
             timeLeft2--;
             document.getElementById('timerDisplay2').innerText = timeLeft2 + "s";
+            
             if (timeLeft2 <= 6) {
                 document.getElementById('timerDisplay2').style.display = 'block';
                 document.getElementById('timerDisplay2').classList.add('warning');
-            } else if (timerHidden2) {
+            } else if (globalTimerHidden) {
                 document.getElementById('timerDisplay2').style.display = 'none';
             }
             if (timeLeft2 <= 0) { clearInterval(timerInterval2); processSequenceAnswer2(); }
@@ -362,10 +361,10 @@ if (globalTimerHidden) {
     }
 
     document.getElementById('toggleTimerBtn2').addEventListener('click', function() {
-    globalTimerHidden = !globalTimerHidden;
-    document.getElementById('timerDisplay2').style.display = globalTimerHidden ? 'none' : 'block';
-    this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-});
+        globalTimerHidden = !globalTimerHidden;
+        document.getElementById('timerDisplay2').style.display = globalTimerHidden ? 'none' : 'block';
+        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
+    });
 
     document.getElementById('submit-sequence-2').addEventListener('click', processSequenceAnswer2);
     document.getElementById('answerInput2').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer2(); });
@@ -379,78 +378,53 @@ if (globalTimerHidden) {
         results.push({ question: "sequence_2", input: raw, correct: isCorrect, timeLeft: timeLeft2 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
 
-        // Move to Question 3 instead of the final page
         document.getElementById('sequence-page-2').style.display = 'none';
         document.getElementById('question-page-3').style.display = 'block';
-        startTimer3(); // Start the clock for Q3!
+        startTimer3(); 
     }
 
     // ==========================================
     // --- QUESTION 3 LOGIC (Multiple Choice) ---
     // ==========================================
-
-    let timeLeft3 = 40;
-    let timerInterval3;
-    let timerHidden3 = false;
-
-    // Timer Logic for Q3
-   function startTimer3() {
-    // Carry over the "hidden" preference from previous screens
-    // We check if timerHidden (Q1) or timerHidden2 (Q2) was true
-
-    if (globalTimerHidden) {
-        document.getElementById('timerDisplay3').style.display = 'none';
-        document.getElementById('toggleTimerBtn3').innerText = 'Show Timer';
-    }
-    
-
-    timerInterval3 = setInterval(() => {
-        timeLeft3--;
-        document.getElementById('timerDisplay3').innerText = timeLeft3 + "s";
-        
-        // Timer behavior: Always reappear at 6 seconds regardless of preference
-        if (timeLeft3 <= 6) {
-            document.getElementById('timerDisplay3').style.display = 'block';
-            document.getElementById('timerDisplay3').classList.add('warning');
-        } else if (timerHidden3) {
+    function startTimer3() {
+        if (globalTimerHidden) {
             document.getElementById('timerDisplay3').style.display = 'none';
+            document.getElementById('toggleTimerBtn3').innerText = 'Show Timer';
         }
 
-        if (timeLeft3 <= 0) {
-            clearInterval(timerInterval3);
-            processAnswer3();
-        }
-    }, 1000);
-}
+        timerInterval3 = setInterval(() => {
+            timeLeft3--;
+            document.getElementById('timerDisplay3').innerText = timeLeft3 + "s";
+            
+            if (timeLeft3 <= 6) {
+                document.getElementById('timerDisplay3').style.display = 'block';
+                document.getElementById('timerDisplay3').classList.add('warning');
+            } else if (globalTimerHidden) {
+                document.getElementById('timerDisplay3').style.display = 'none';
+            }
+            if (timeLeft3 <= 0) { clearInterval(timerInterval3); processAnswer3(); }
+        }, 1000);
+    }
 
-    // Toggle Timer Button for Q3
     document.getElementById('toggleTimerBtn3').addEventListener('click', function() {
-    globalTimerHidden = !globalTimerHidden;
-    document.getElementById('timerDisplay3').style.display = globalTimerHidden ? 'none' : 'block';
-    this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-});
+        globalTimerHidden = !globalTimerHidden;
+        document.getElementById('timerDisplay3').style.display = globalTimerHidden ? 'none' : 'block';
+        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
+    });
 
-    // Question 3 Answer Submission
     document.getElementById('submit-question-3').addEventListener('click', processAnswer3);
 
     function processAnswer3() {
-        clearInterval(timerInterval3); // Stop the clock
+        clearInterval(timerInterval3); 
         
-        // Find which radio button was selected
         const selectedOption = document.querySelector('input[name="q3-answer"]:checked');
-        
-        // If they didn't select anything before time ran out, record it as blank
         const rawInput = selectedOption ? selectedOption.value : ""; 
         const isCorrect = (rawInput === "Sphere");
 
-        // Store in Session Storage alongside previous questions
         const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
         results.push({ question: "logic_3", input: rawInput, correct: isCorrect, timeLeft: timeLeft3 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
         
-        console.log("Answer 3 saved!", results);
-
-        // NOW move to the final "Work in Progress" screen
         document.getElementById('question-page-3').style.display = 'none';
         document.getElementById('final-page').style.display = 'block'; 
     }
