@@ -13,26 +13,57 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Connected to MongoDB Atlas!'))
     .catch(err => console.error('Could not connect to MongoDB:', err));
 
-// 2. Define the Participant Schema (The "Blueprint" for your data)
+// 2. Define the Participant Schema
 const participantSchema = new mongoose.Schema({
-    name: String,
+    username: { type: String, unique: true, required: true },
     age: Number,
     sex: String,
     hasTakenBefore: String,
-    predictedScore: Number, // New field
-    score: { type: Number, default: 0 },
+    predictedScore: Number,
+    testResults: Array, // To store their answers permanently
+    totalScore: { type: Number, default: 0 },
+    timeLeftTotal: { type: Number, default: 0 },
     date: { type: Date, default: Date.now }
 });
 
-// Update the model if you haven't already
 const Participant = mongoose.model('Participant', participantSchema);
 
-// 1. Initial Data Submission (Page 1)
+// ==========================================
+// --- ROUTES ---
+// ==========================================
+
+// Login or Register Route
+app.post('/login-or-register', async (req, res) => {
+    try {
+        const { username } = req.body;
+        let user = await Participant.findOne({ username });
+
+        if (user) {
+            // User exists! Tell the frontend they are "Logged In"
+            res.status(200).json({ status: 'exists', user });
+        } else {
+            // New user! Create the account
+            user = new Participant({ username });
+            await user.save();
+            res.status(201).json({ status: 'created', user });
+        }
+    } catch (error) {
+        console.error("Login Error:", error);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Update Demographics (Used by new users)
 app.post('/submit-data', async (req, res) => {
     try {
-        console.log("Creating new participant:", req.body);
-        const newUser = new Participant(req.body);
-        await newUser.save();
+        const { username, age, sex } = req.body;
+        
+        // Find the user created during login and UPDATE them
+        await Participant.findOneAndUpdate(
+            { username: username }, 
+            { age: age, sex: sex },
+            { new: true }
+        );
         res.status(200).send('Success');
     } catch (error) {
         console.error("Submission Error:", error);
@@ -40,35 +71,19 @@ app.post('/submit-data', async (req, res) => {
     }
 });
 
-// 3. The Route
-app.post('/submit-prediction', async (req, res) => {
-    try {
-        const { name, predictedScore } = req.body;
-        
-        const updatedUser = await Participant.findOneAndUpdate(
-            { name: name }, 
-            { predictedScore: predictedScore },
-            { new: true }
-        );
-
-        res.status(200).send('Prediction processed');
-    } catch (error) {
-        res.status(500).send('Server Error');
-    }
-});
+// Update Experience Route
 app.post('/update-experience', async (req, res) => {
     try {
-        const { name, hasTakenBefore } = req.body;
+        const { username, hasTakenBefore } = req.body; // Switched to username
         
-        // Find the user by name and update their experience field
         const updatedUser = await Participant.findOneAndUpdate(
-            { name: name }, 
+            { username: username }, // Switched to username
             { hasTakenBefore: hasTakenBefore },
             { new: true }
         );
 
         if (updatedUser) {
-            console.log("Updated experience for:", name);
+            console.log("Updated experience for:", username);
             res.status(200).send('Updated successfully');
         } else {
             res.status(404).send('User not found');
@@ -78,11 +93,45 @@ app.post('/update-experience', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
-// This line tells the code: "Use Render's port, or 3000 if I'm testing at home"
+
+// Submit Prediction Route
+app.post('/submit-prediction', async (req, res) => {
+    try {
+        const { username, predictedScore } = req.body; // Switched to username
+        
+        await Participant.findOneAndUpdate(
+            { username: username }, // Switched to username
+            { predictedScore: predictedScore },
+            { new: true }
+        );
+
+        res.status(200).send('Prediction processed');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Leaderboard Route
+app.get('/leaderboard', async (req, res) => {
+    try {
+        // Find all users, select only username and score, sort highest to lowest
+        const topUsers = await Participant.find({}, 'username totalScore')
+            .sort({ totalScore: -1 }) // -1 means descending order (highest first)
+            .limit(50); // Only grab the top 50
+        
+        res.status(200).json(topUsers);
+    } catch (error) {
+        console.error("Leaderboard Error:", error);
+        res.status(500).send('Server Error');
+    }
+});
+
+// ==========================================
+// --- SERVER SETUP ---
+// ==========================================
 const PORT = process.env.PORT || 3000;
 
-// This line tells the server to listen on "0.0.0.0" 
-// This is required for Render to "see" your app
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });

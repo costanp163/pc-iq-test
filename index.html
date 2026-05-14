@@ -115,11 +115,16 @@
     <div id="screen-welcome">
         <h1>P.C. IQ Test</h1>
         <h3>Iteration 1</h3>
+        <div class="form-group">
+            <label for="username">Enter Username to Start or View Results</label>
+            <input type="text" id="username" placeholder="e.g. TestUser123" required>
+        </div>
+        <button id="btn-login">Login / Start</button>
+    </div>
+
+    <div id="screen-demographics" style="display: none;">
+        <h1>Demographics</h1>
         <form id="welcome-form">
-            <div class="form-group">
-                <label for="full-name">Full Name (First and Last)</label>
-                <input type="text" id="full-name" placeholder="e.g. John Doe" required>
-            </div>
             <div class="form-group">
                 <label for="age">Age</label>
                 <input type="number" id="age" min="1" max="120" placeholder="Your age" required>
@@ -213,23 +218,85 @@
     <div id="final-page" style="display:none;">
         <h1>Work in Progress</h1>
         <p style="color: #7f8c8d; margin-top: 15px;">All responses saved!</p>
+        
+        <div style="background: #f8f9fa; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-top: 20px;">
+            <h3 style="color: #2c3e50; margin-bottom: 10px;">Leaderboard</h3>
+            <ul id="leaderboard-list" style="list-style-type: none; padding: 0; text-align: left; margin: 0;">
+                </ul>
+        </div>
     </div>
 
 </div> 
 
 <script>
-    // --- GLOBAL TIMER STATE ---
+    // --- GLOBAL STATE ---
     let globalTimerHidden = false; 
+    let globalUsername = ""; // Stores the user's name securely across pages
 
     // Question Specific Timers
-    let timeLeft = 40;
-    let timerInterval;
+    let timeLeft = 40; let timerInterval;
+    let timeLeft2 = 40; let timerInterval2;
+    let timeLeft3 = 40; let timerInterval3;
 
-    let timeLeft2 = 40;
-    let timerInterval2;
+    // --- LOGIN LOGIC ---
+    document.getElementById('btn-login').addEventListener('click', function() {
+        const usernameInput = document.getElementById('username').value.trim();
+        if (!usernameInput) {
+            alert("Please enter a username.");
+            return;
+        }
+        
+        globalUsername = usernameInput; // Save to global variable
+        
+        fetch('https://pc-iq-test.onrender.com/login-or-register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: globalUsername })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'exists' && data.user && data.user.totalScore > 0) {
+                // If they already finished the test, jump straight to the Leaderboard
+                showLeaderboard(data.user);
+            } else {
+                // If they are new or haven't finished, ask for demographics
+                document.getElementById('screen-welcome').style.display = 'none';
+                document.getElementById('screen-demographics').style.display = 'block';
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            // Fallback for local testing
+            document.getElementById('screen-welcome').style.display = 'none';
+            document.getElementById('screen-demographics').style.display = 'block';
+        });
+    });
 
-    let timeLeft3 = 40;
-    let timerInterval3;
+    // --- LEADERBOARD LOGIC ---
+    function showLeaderboard(currentUser) {
+        document.getElementById('screen-welcome').style.display = 'none';
+        document.getElementById('screen-demographics').style.display = 'none';
+        document.getElementById('question-page-3').style.display = 'none';
+        document.getElementById('final-page').style.display = 'block';
+        
+        fetch('https://pc-iq-test.onrender.com/leaderboard')
+            .then(res => res.json())
+            .then(allUsers => {
+                const list = document.getElementById('leaderboard-list');
+                if (allUsers.length === 0) {
+                    list.innerHTML = "<li>No scores yet!</li>";
+                    return;
+                }
+                list.innerHTML = allUsers.map((u, index) => `
+                    <li style="padding: 5px 0; border-bottom: 1px solid #eee;">
+                        <strong>#${index + 1}</strong> - ${u.username}: ${u.totalScore} pts
+                    </li>
+                `).join('');
+            })
+            .catch(() => {
+                document.getElementById('leaderboard-list').innerHTML = "<li>Leaderboard unavailable</li>";
+            });
+    }
 
     // --- FLOW CONTROL ---
     function goToNextSection() {
@@ -242,7 +309,7 @@
     document.getElementById('welcome-form').addEventListener('submit', function(event) {
         event.preventDefault();
         const userData = {
-            name: document.getElementById('full-name').value,
+            username: globalUsername, // Now uses the global username
             age: document.getElementById('age').value,
             sex: document.getElementById('sex').value
         };
@@ -253,22 +320,21 @@
             body: JSON.stringify(userData)
         }).then(response => {
             if (response.ok) {
-                document.getElementById('screen-welcome').style.display = 'none';
+                document.getElementById('screen-demographics').style.display = 'none';
                 document.getElementById('screen-test').style.display = 'block';
             }
         }).catch(() => {
-            document.getElementById('screen-welcome').style.display = 'none';
+            document.getElementById('screen-demographics').style.display = 'none';
             document.getElementById('screen-test').style.display = 'block';
         });
     });
 
     document.getElementById('final-next').addEventListener('click', function() {
         const exp = document.getElementById('experience').value;
-        const nm = document.getElementById('full-name').value; 
         fetch('https://pc-iq-test.onrender.com/update-experience', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: nm, hasTakenBefore: exp })
+            body: JSON.stringify({ username: globalUsername, hasTakenBefore: exp })
         }).finally(() => {
             document.getElementById('screen-test').style.display = 'none';
             document.getElementById('prediction-page').style.display = 'block';
@@ -276,13 +342,12 @@
     });
 
     document.getElementById('submit-prediction').addEventListener('click', function() {
-        const nm = document.getElementById('full-name').value; 
         const pred = parseInt(document.getElementById('predicted-input').value);
         if (pred >= 50 && pred <= 180) {
             fetch('https://pc-iq-test.onrender.com/submit-prediction', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: nm, predictedScore: pred })
+                body: JSON.stringify({ username: globalUsername, predictedScore: pred })
             }).finally(() => { goToNextSection(); });
         } else {
             alert("Enter a score between 50 and 180, or press Skip.");
@@ -425,8 +490,8 @@
         results.push({ question: "logic_3", input: rawInput, correct: isCorrect, timeLeft: timeLeft3 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
         
-        document.getElementById('question-page-3').style.display = 'none';
-        document.getElementById('final-page').style.display = 'block'; 
+        // When they finish Question 3, show the leaderboard
+        showLeaderboard(); 
     }
 </script>
 
