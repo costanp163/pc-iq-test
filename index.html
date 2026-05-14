@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P.C. IQ Test - Welcome</title>
+    <title>P.C. IQ Test</title>
     <style>
         /* General Styling */
         body {
@@ -112,6 +112,7 @@
 
 <div class="welcome-card">
     
+    <!-- Screen 1: Login -->
     <div id="screen-welcome">
         <h1>P.C. IQ Test</h1>
         <h3>Iteration 1</h3>
@@ -122,6 +123,7 @@
         <button id="btn-login">Login / Start</button>
     </div>
 
+    <!-- Screen 1.5: Demographics (For New Users) -->
     <div id="screen-demographics" style="display: none;">
         <h1>Demographics</h1>
         <form id="welcome-form">
@@ -142,6 +144,7 @@
         </form>
     </div>
 
+    <!-- Screen 2: Experience -->
     <div id="screen-test" style="display: none;">
         <h1>Quick Question</h1>
         <div class="form-group">
@@ -154,6 +157,7 @@
         <button id="final-next">Next</button>
     </div>
 
+    <!-- Screen 3: Prediction -->
     <div id="prediction-page" style="display:none;">
         <h1>Prediction</h1>
         <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px;"><i>What score do you think you will get?</i></p>
@@ -164,6 +168,7 @@
         <button id="skip-prediction" style="background-color: #95a5a6; margin-top: 10px;">Skip</button>
     </div>
 
+    <!-- Screen 4: Sequence 1 -->
     <div id="sequence-page" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn" class="toggle-btn">Hide Timer</button>
@@ -175,6 +180,7 @@
         <button id="submit-sequence">Next</button>
     </div>
 
+    <!-- Screen 5: Sequence 2 -->
     <div id="sequence-page-2" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn2" class="toggle-btn">Hide Timer</button>
@@ -186,6 +192,7 @@
         <button id="submit-sequence-2">Next</button>
     </div>
 
+    <!-- Screen 6: Question 3 (Multiple Choice) -->
     <div id="question-page-3" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn3" class="toggle-btn">Hide Timer</button>
@@ -215,14 +222,16 @@
         <button id="submit-question-3">Next</button>
     </div>
 
+    <!-- Screen 7: Final Page & Leaderboard -->
     <div id="final-page" style="display:none;">
-        <h1>Work in Progress</h1>
-        <p style="color: #7f8c8d; margin-top: 15px;">All responses saved!</p>
+        <h1>Test Complete!</h1>
+        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 3</h2>
         
         <div style="background: #f8f9fa; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-top: 20px;">
-            <h3 style="color: #2c3e50; margin-bottom: 10px;">Leaderboard</h3>
+            <h3 style="color: #2c3e50; margin-bottom: 10px;">Global Leaderboard</h3>
             <ul id="leaderboard-list" style="list-style-type: none; padding: 0; text-align: left; margin: 0;">
-                </ul>
+                <!-- Rankings inject here -->
+            </ul>
         </div>
     </div>
 
@@ -246,7 +255,7 @@
             return;
         }
         
-        globalUsername = usernameInput; // Save to global variable
+        globalUsername = usernameInput; 
         
         fetch('https://pc-iq-test.onrender.com/login-or-register', {
             method: 'POST',
@@ -255,29 +264,32 @@
         })
         .then(res => res.json())
         .then(data => {
-            if (data.status === 'exists' && data.user && data.user.totalScore > 0) {
-                // If they already finished the test, jump straight to the Leaderboard
-                showLeaderboard(data.user);
+            // Check if user already took the test by checking if testResults has data
+            if (data.status === 'exists' && data.user.testResults && data.user.testResults.length > 0) {
+                showLeaderboard(data.user.totalScore);
             } else {
-                // If they are new or haven't finished, ask for demographics
+                // Clear session storage if they are taking it fresh
+                sessionStorage.removeItem('testResults');
                 document.getElementById('screen-welcome').style.display = 'none';
                 document.getElementById('screen-demographics').style.display = 'block';
             }
         })
         .catch(err => {
             console.error(err);
-            // Fallback for local testing
             document.getElementById('screen-welcome').style.display = 'none';
             document.getElementById('screen-demographics').style.display = 'block';
         });
     });
 
     // --- LEADERBOARD LOGIC ---
-    function showLeaderboard(currentUser) {
+    function showLeaderboard(userScore) {
         document.getElementById('screen-welcome').style.display = 'none';
         document.getElementById('screen-demographics').style.display = 'none';
         document.getElementById('question-page-3').style.display = 'none';
+        
+        // Show the final page and update the score
         document.getElementById('final-page').style.display = 'block';
+        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 3`;
         
         fetch('https://pc-iq-test.onrender.com/leaderboard')
             .then(res => res.json())
@@ -287,11 +299,15 @@
                     list.innerHTML = "<li>No scores yet!</li>";
                     return;
                 }
-                list.innerHTML = allUsers.map((u, index) => `
-                    <li style="padding: 5px 0; border-bottom: 1px solid #eee;">
+                list.innerHTML = allUsers.map((u, index) => {
+                    // Highlight the current user in the list
+                    const isCurrentUser = u.username === globalUsername;
+                    const style = isCurrentUser ? 'font-weight: bold; color: #3498db; background: #ebf5fb; padding: 5px;' : 'padding: 5px 0;';
+                    return `
+                    <li style="border-bottom: 1px solid #eee; ${style}">
                         <strong>#${index + 1}</strong> - ${u.username}: ${u.totalScore} pts
-                    </li>
-                `).join('');
+                    </li>`;
+                }).join('');
             })
             .catch(() => {
                 document.getElementById('leaderboard-list').innerHTML = "<li>Leaderboard unavailable</li>";
@@ -309,7 +325,7 @@
     document.getElementById('welcome-form').addEventListener('submit', function(event) {
         event.preventDefault();
         const userData = {
-            username: globalUsername, // Now uses the global username
+            username: globalUsername, 
             age: document.getElementById('age').value,
             sex: document.getElementById('sex').value
         };
@@ -490,8 +506,27 @@
         results.push({ question: "logic_3", input: rawInput, correct: isCorrect, timeLeft: timeLeft3 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
         
-        // When they finish Question 3, show the leaderboard
-        showLeaderboard(); 
+        // --- NEW: Calculate Total Score ---
+        // Filters the results array to only find items where `correct` is true, then counts them.
+        const totalScore = results.filter(answer => answer.correct).length;
+        
+        // Optional: Calculate total time saved
+        const totalTimeSaved = results.reduce((sum, answer) => sum + answer.timeLeft, 0);
+
+        // --- NEW: Send Final Score to Database ---
+        fetch('https://pc-iq-test.onrender.com/submit-results', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: globalUsername,
+                testResults: results,
+                totalScore: totalScore,
+                timeLeftTotal: totalTimeSaved
+            })
+        }).finally(() => {
+            // Once sent, immediately trigger the leaderboard view!
+            showLeaderboard(totalScore);
+        });
     }
 </script>
 

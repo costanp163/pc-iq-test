@@ -58,7 +58,6 @@ app.post('/submit-data', async (req, res) => {
     try {
         const { username, age, sex } = req.body;
         
-        // Find the user created during login and UPDATE them
         await Participant.findOneAndUpdate(
             { username: username }, 
             { age: age, sex: sex },
@@ -74,16 +73,15 @@ app.post('/submit-data', async (req, res) => {
 // Update Experience Route
 app.post('/update-experience', async (req, res) => {
     try {
-        const { username, hasTakenBefore } = req.body; // Switched to username
+        const { username, hasTakenBefore } = req.body; 
         
         const updatedUser = await Participant.findOneAndUpdate(
-            { username: username }, // Switched to username
+            { username: username },
             { hasTakenBefore: hasTakenBefore },
             { new: true }
         );
 
         if (updatedUser) {
-            console.log("Updated experience for:", username);
             res.status(200).send('Updated successfully');
         } else {
             res.status(404).send('User not found');
@@ -97,10 +95,10 @@ app.post('/update-experience', async (req, res) => {
 // Submit Prediction Route
 app.post('/submit-prediction', async (req, res) => {
     try {
-        const { username, predictedScore } = req.body; // Switched to username
+        const { username, predictedScore } = req.body;
         
         await Participant.findOneAndUpdate(
-            { username: username }, // Switched to username
+            { username: username },
             { predictedScore: predictedScore },
             { new: true }
         );
@@ -112,13 +110,35 @@ app.post('/submit-prediction', async (req, res) => {
     }
 });
 
+// --- NEW: Submit Final Test Results Route ---
+app.post('/submit-results', async (req, res) => {
+    try {
+        const { username, testResults, totalScore, timeLeftTotal } = req.body;
+
+        await Participant.findOneAndUpdate(
+            { username: username }, 
+            { 
+                testResults: testResults,
+                totalScore: totalScore,
+                timeLeftTotal: timeLeftTotal
+            },
+            { new: true }
+        );
+
+        res.status(200).send('Results saved successfully');
+    } catch (error) {
+        console.error("Submit Results Error:", error);
+        res.status(500).send('Server Error');
+    }
+});
+
 // Leaderboard Route
 app.get('/leaderboard', async (req, res) => {
     try {
         // Find all users, select only username and score, sort highest to lowest
         const topUsers = await Participant.find({}, 'username totalScore')
             .sort({ totalScore: -1 }) // -1 means descending order (highest first)
-            .limit(50); // Only grab the top 50
+            .limit(50); 
         
         res.status(200).json(topUsers);
     } catch (error) {
