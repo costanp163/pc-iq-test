@@ -23,8 +23,10 @@
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             text-align: center;
+            max-height: 95vh;
+            overflow-y: auto; 
         }
 
         h1 { margin-bottom: 5px; color: #2c3e50; }
@@ -75,7 +77,6 @@
         .timer.warning { color: #e74c3c; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
         
-        /* Fixed Toggle Button Color */
         .toggle-btn { background: #ecf0f1; color: #2c3e50; border: 1px solid #bdc3c7; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; width: auto; margin-top: 0; }
         
         .sequence { font-size: 1.8rem; font-weight: bold; color: #34495e; margin: 20px 0; letter-spacing: 2px;}
@@ -89,13 +90,21 @@
             margin: 20px 0; 
         }
 
+        /* Multiple Choice Styling - 3x2 Grid Layout for 6 Options */
+        .options-container-6 { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px; 
+            margin: 20px 0; 
+        }
+
         .radio-option {
             background: #f8f9fa; 
             border: 1px solid #ccc; 
-            padding: 25px 10px; 
+            padding: 15px 5px; 
             border-radius: 6px; 
             cursor: pointer; 
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: background 0.2s;
             display: flex;
             flex-direction: column-reverse; 
@@ -105,14 +114,49 @@
         }
 
         .radio-option:hover { background: #e2e6ea; }
-        .radio-option input[type="radio"] { margin-left: 0; margin-top: 15px; transform: scale(1.3); cursor: pointer; }
+        .radio-option input[type="radio"] { margin-left: 0; margin-top: 10px; transform: scale(1.3); cursor: pointer; }
+
+        /* Matrix Reasoning Styles */
+        .matrix-main-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .matrix-main-grid img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .matrix-missing-piece {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+            border: 2px dashed #bdc3c7;
+            font-size: 2rem;
+            color: #bdc3c7;
+            border-radius: 4px;
+        }
+
+        .matrix-choice img {
+            width: 60px; 
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
 
 <div class="welcome-card">
     
-    <!-- Screen 1: Login -->
     <div id="screen-welcome">
         <h1>P.C. IQ Test</h1>
         <h3>Iteration 1</h3>
@@ -123,7 +167,6 @@
         <button id="btn-login">Login / Start</button>
     </div>
 
-    <!-- Screen 1.5: Demographics (For New Users) -->
     <div id="screen-demographics" style="display: none;">
         <h1>Demographics</h1>
         <form id="welcome-form">
@@ -144,7 +187,6 @@
         </form>
     </div>
 
-    <!-- Screen 2: Experience -->
     <div id="screen-test" style="display: none;">
         <h1>Quick Question</h1>
         <div class="form-group">
@@ -157,7 +199,6 @@
         <button id="final-next">Next</button>
     </div>
 
-    <!-- Screen 3: Prediction -->
     <div id="prediction-page" style="display:none;">
         <h1>Prediction</h1>
         <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px;"><i>What score do you think you will get?</i></p>
@@ -168,7 +209,6 @@
         <button id="skip-prediction" style="background-color: #95a5a6; margin-top: 10px;">Skip</button>
     </div>
 
-    <!-- Screen 4: Question 1 -->
     <div id="sequence-page" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn" class="toggle-btn">Hide Timer</button>
@@ -176,11 +216,10 @@
         </header>
         <h2>Complete the sequence:</h2>
         <p class="sequence">2, 5, 8, 11, 14, ?</p>
-        <input type="text" id="answerInput" class="answer-input" placeholder="?">
+        <input type="text" id="answerInput" class="answer-input" placeholder="?" autocomplete="off">
         <button id="submit-sequence">Next</button>
     </div>
 
-    <!-- Screen 5: Question 2 -->
     <div id="sequence-page-2" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn2" class="toggle-btn">Hide Timer</button>
@@ -188,11 +227,10 @@
         </header>
         <h2>Complete the sequence:</h2>
         <p class="sequence">Z, X, V, T, R, ?</p>
-        <input type="text" id="answerInput2" class="answer-input" placeholder="?">
+        <input type="text" id="answerInput2" class="answer-input" placeholder="?" autocomplete="off">
         <button id="submit-sequence-2">Next</button>
     </div>
 
-    <!-- Screen 6: Question 3 -->
     <div id="question-page-3" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn3" class="toggle-btn">Hide Timer</button>
@@ -218,11 +256,9 @@
                 <span>Triangle</span>
             </label>
         </div>
-
         <button id="submit-question-3">Next</button>
     </div>
 
-    <!-- Screen 7: Question 4 (NEW) -->
     <div id="sequence-page-4" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn4" class="toggle-btn">Hide Timer</button>
@@ -230,20 +266,94 @@
         </header>
         <h2>Complete the sequence:</h2>
         <p class="sequence">1, 2, 4, 7, 11, 16, ?</p>
-        <input type="text" id="answerInput4" class="answer-input" placeholder="?">
+        
+        <div class="options-container-6">
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=A" alt="Choice A">
+                <input type="radio" name="q4-answer" value="A">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=B" alt="Choice B">
+                <input type="radio" name="q4-answer" value="B">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=C" alt="Choice C">
+                <input type="radio" name="q4-answer" value="C">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=D" alt="Choice D">
+                <input type="radio" name="q4-answer" value="D">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=E" alt="Choice E">
+                <input type="radio" name="q4-answer" value="E">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=F" alt="Choice F">
+                <input type="radio" name="q4-answer" value="F">
+            </label>
+        </div>
+        
         <button id="submit-sequence-4">Next</button>
     </div>
 
-    <!-- Screen 8: Final Page & Leaderboard -->
+    <div id="question-page-5" style="display: none;">
+        <header class="top-bar">
+            <button id="toggleTimerBtn5" class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplay5" class="timer">40s</div>
+        </header>
+        <h2 style="font-size: 1.2rem;">Which piece completes the pattern?</h2>
+
+        <div class="matrix-main-grid">
+            <img src="https://via.placeholder.com/150?text=1" alt="Pattern 1">
+            <img src="https://via.placeholder.com/150?text=2" alt="Pattern 2">
+            <img src="https://via.placeholder.com/150?text=3" alt="Pattern 3">
+            <img src="https://via.placeholder.com/150?text=4" alt="Pattern 4">
+            <img src="https://via.placeholder.com/150?text=5" alt="Pattern 5">
+            <img src="https://via.placeholder.com/150?text=6" alt="Pattern 6">
+            <img src="https://via.placeholder.com/150?text=7" alt="Pattern 7">
+            <img src="https://via.placeholder.com/150?text=8" alt="Pattern 8">
+            <div class="matrix-missing-piece">?</div>
+        </div>
+
+        <div class="options-container-6">
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=A" alt="Choice A">
+                <input type="radio" name="q5-answer" value="A">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=B" alt="Choice B">
+                <input type="radio" name="q5-answer" value="B">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=C" alt="Choice C">
+                <input type="radio" name="q5-answer" value="C">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=D" alt="Choice D">
+                <input type="radio" name="q5-answer" value="D">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=E" alt="Choice E">
+                <input type="radio" name="q5-answer" value="E">
+            </label>
+            <label class="radio-option matrix-choice">
+                <img src="https://via.placeholder.com/150?text=F" alt="Choice F">
+                <input type="radio" name="q5-answer" value="F">
+            </label>
+        </div>
+
+        <button id="submit-question-5">Finish Test</button>
+    </div>
+
     <div id="final-page" style="display:none;">
         <h1>Test Complete!</h1>
-        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 4</h2>
+        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 5</h2>
         
         <div style="background: #f8f9fa; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-top: 20px;">
             <h3 style="color: #2c3e50; margin-bottom: 10px;">Global Leaderboard</h3>
-            <ul id="leaderboard-list" style="list-style-type: none; padding: 0; text-align: left; margin: 0;">
-                <!-- Rankings inject here -->
-            </ul>
+            <ul id="leaderboard-list" style="list-style-type: none; padding: 0; text-align: left; margin: 0; max-height: 200px; overflow-y: auto;">
+                </ul>
         </div>
     </div>
 
@@ -259,6 +369,7 @@
     let timeLeft2 = 40; let timerInterval2;
     let timeLeft3 = 40; let timerInterval3;
     let timeLeft4 = 40; let timerInterval4;
+    let timeLeft5 = 40; let timerInterval5; 
 
     // --- LOGIN LOGIC ---
     document.getElementById('btn-login').addEventListener('click', function() {
@@ -296,10 +407,10 @@
     function showLeaderboard(userScore) {
         document.getElementById('screen-welcome').style.display = 'none';
         document.getElementById('screen-demographics').style.display = 'none';
-        document.getElementById('sequence-page-4').style.display = 'none';
+        document.getElementById('question-page-5').style.display = 'none';
         
         document.getElementById('final-page').style.display = 'block';
-        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 4`;
+        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 5`;
         
         fetch('https://pc-iq-test.onrender.com/leaderboard')
             .then(res => res.json())
@@ -474,7 +585,7 @@
     }
 
     // ==========================================
-    // --- QUESTION 3 LOGIC (Multiple Choice) ---
+    // --- QUESTION 3 LOGIC ---
     // ==========================================
     function startTimer3() {
         if (globalTimerHidden) {
@@ -515,14 +626,13 @@
         results.push({ question: "logic_3", input: rawInput, correct: isCorrect, timeLeft: timeLeft3 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
         
-        // MOVED OFF TO QUESTION 4
         document.getElementById('question-page-3').style.display = 'none';
         document.getElementById('sequence-page-4').style.display = 'block'; 
         startSequenceTimer4();
     }
 
     // ==========================================
-    // --- QUESTION 4 LOGIC (NEW SEQUENCE) ---
+    // --- QUESTION 4 LOGIC (NOW MULTIPLE CHOICE) ---
     // ==========================================
     function startSequenceTimer4() {
         if (globalTimerHidden) {
@@ -551,18 +661,71 @@
     });
 
     document.getElementById('submit-sequence-4').addEventListener('click', processSequenceAnswer4);
-    document.getElementById('answerInput4').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer4(); });
 
     function processSequenceAnswer4() {
         clearInterval(timerInterval4);
-        const raw = document.getElementById('answerInput4').value;
-        const isCorrect = (raw.replace(/\s+/g, '') === "22");
+        
+        // Grab the checked radio button
+        const selectedOption = document.querySelector('input[name="q4-answer"]:checked');
+        const rawInput = selectedOption ? selectedOption.value : ""; 
+        
+        // The correct answer for Q4 is explicitly set to "A"
+        const isCorrect = (rawInput === "A"); 
 
         const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "sequence_4", input: raw, correct: isCorrect, timeLeft: timeLeft4 });
+        results.push({ question: "sequence_4", input: rawInput, correct: isCorrect, timeLeft: timeLeft4 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
 
-        // --- FINAL SUBMISSION LOGIC MOVED HERE ---
+        document.getElementById('sequence-page-4').style.display = 'none';
+        document.getElementById('question-page-5').style.display = 'block'; 
+        startTimer5();
+    }
+
+    // ==========================================
+    // --- QUESTION 5 LOGIC (MATRIX) ---
+    // ==========================================
+    function startTimer5() {
+        if (globalTimerHidden) {
+            document.getElementById('timerDisplay5').style.display = 'none';
+            document.getElementById('toggleTimerBtn5').innerText = 'Show Timer';
+        }
+
+        timerInterval5 = setInterval(() => {
+            timeLeft5--;
+            document.getElementById('timerDisplay5').innerText = timeLeft5 + "s";
+            
+            if (timeLeft5 <= 6) {
+                document.getElementById('timerDisplay5').style.display = 'block';
+                document.getElementById('timerDisplay5').classList.add('warning');
+            } else if (globalTimerHidden) {
+                document.getElementById('timerDisplay5').style.display = 'none';
+            }
+            if (timeLeft5 <= 0) { clearInterval(timerInterval5); processAnswer5(); }
+        }, 1000);
+    }
+
+    document.getElementById('toggleTimerBtn5').addEventListener('click', function() {
+        globalTimerHidden = !globalTimerHidden;
+        document.getElementById('timerDisplay5').style.display = globalTimerHidden ? 'none' : 'block';
+        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
+    });
+
+    document.getElementById('submit-question-5').addEventListener('click', processAnswer5);
+
+    function processAnswer5() {
+        clearInterval(timerInterval5); 
+        
+        const selectedOption = document.querySelector('input[name="q5-answer"]:checked');
+        const rawInput = selectedOption ? selectedOption.value : ""; 
+        
+        // Target answer explicitly set to A as requested
+        const isCorrect = (rawInput === "A");
+
+        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
+        results.push({ question: "matrix_5", input: rawInput, correct: isCorrect, timeLeft: timeLeft5 });
+        sessionStorage.setItem('testResults', JSON.stringify(results));
+
+        // --- FINAL SUBMISSION LOGIC ---
         const totalScore = results.filter(answer => answer.correct).length;
         const totalTimeSaved = results.reduce((sum, answer) => sum + answer.timeLeft, 0);
 
