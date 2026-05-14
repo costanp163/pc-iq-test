@@ -168,7 +168,7 @@
         <button id="skip-prediction" style="background-color: #95a5a6; margin-top: 10px;">Skip</button>
     </div>
 
-    <!-- Screen 4: Sequence 1 -->
+    <!-- Screen 4: Question 1 -->
     <div id="sequence-page" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn" class="toggle-btn">Hide Timer</button>
@@ -180,7 +180,7 @@
         <button id="submit-sequence">Next</button>
     </div>
 
-    <!-- Screen 5: Sequence 2 -->
+    <!-- Screen 5: Question 2 -->
     <div id="sequence-page-2" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn2" class="toggle-btn">Hide Timer</button>
@@ -192,7 +192,7 @@
         <button id="submit-sequence-2">Next</button>
     </div>
 
-    <!-- Screen 6: Question 3 (Multiple Choice) -->
+    <!-- Screen 6: Question 3 -->
     <div id="question-page-3" style="display: none;">
         <header class="top-bar">
             <button id="toggleTimerBtn3" class="toggle-btn">Hide Timer</button>
@@ -222,10 +222,22 @@
         <button id="submit-question-3">Next</button>
     </div>
 
-    <!-- Screen 7: Final Page & Leaderboard -->
+    <!-- Screen 7: Question 4 (NEW) -->
+    <div id="sequence-page-4" style="display: none;">
+        <header class="top-bar">
+            <button id="toggleTimerBtn4" class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplay4" class="timer">40s</div>
+        </header>
+        <h2>Complete the sequence:</h2>
+        <p class="sequence">1, 2, 4, 7, 11, 16, ?</p>
+        <input type="text" id="answerInput4" class="answer-input" placeholder="?">
+        <button id="submit-sequence-4">Next</button>
+    </div>
+
+    <!-- Screen 8: Final Page & Leaderboard -->
     <div id="final-page" style="display:none;">
         <h1>Test Complete!</h1>
-        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 3</h2>
+        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 4</h2>
         
         <div style="background: #f8f9fa; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-top: 20px;">
             <h3 style="color: #2c3e50; margin-bottom: 10px;">Global Leaderboard</h3>
@@ -240,12 +252,13 @@
 <script>
     // --- GLOBAL STATE ---
     let globalTimerHidden = false; 
-    let globalUsername = ""; // Stores the user's name securely across pages
+    let globalUsername = ""; 
 
     // Question Specific Timers
     let timeLeft = 40; let timerInterval;
     let timeLeft2 = 40; let timerInterval2;
     let timeLeft3 = 40; let timerInterval3;
+    let timeLeft4 = 40; let timerInterval4;
 
     // --- LOGIN LOGIC ---
     document.getElementById('btn-login').addEventListener('click', function() {
@@ -264,11 +277,9 @@
         })
         .then(res => res.json())
         .then(data => {
-            // Check if user already took the test by checking if testResults has data
             if (data.status === 'exists' && data.user.testResults && data.user.testResults.length > 0) {
                 showLeaderboard(data.user.totalScore);
             } else {
-                // Clear session storage if they are taking it fresh
                 sessionStorage.removeItem('testResults');
                 document.getElementById('screen-welcome').style.display = 'none';
                 document.getElementById('screen-demographics').style.display = 'block';
@@ -285,11 +296,10 @@
     function showLeaderboard(userScore) {
         document.getElementById('screen-welcome').style.display = 'none';
         document.getElementById('screen-demographics').style.display = 'none';
-        document.getElementById('question-page-3').style.display = 'none';
+        document.getElementById('sequence-page-4').style.display = 'none';
         
-        // Show the final page and update the score
         document.getElementById('final-page').style.display = 'block';
-        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 3`;
+        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 4`;
         
         fetch('https://pc-iq-test.onrender.com/leaderboard')
             .then(res => res.json())
@@ -300,7 +310,6 @@
                     return;
                 }
                 list.innerHTML = allUsers.map((u, index) => {
-                    // Highlight the current user in the list
                     const isCurrentUser = u.username === globalUsername;
                     const style = isCurrentUser ? 'font-weight: bold; color: #3498db; background: #ebf5fb; padding: 5px;' : 'padding: 5px 0;';
                     return `
@@ -506,14 +515,57 @@
         results.push({ question: "logic_3", input: rawInput, correct: isCorrect, timeLeft: timeLeft3 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
         
-        // --- NEW: Calculate Total Score ---
-        // Filters the results array to only find items where `correct` is true, then counts them.
+        // MOVED OFF TO QUESTION 4
+        document.getElementById('question-page-3').style.display = 'none';
+        document.getElementById('sequence-page-4').style.display = 'block'; 
+        startSequenceTimer4();
+    }
+
+    // ==========================================
+    // --- QUESTION 4 LOGIC (NEW SEQUENCE) ---
+    // ==========================================
+    function startSequenceTimer4() {
+        if (globalTimerHidden) {
+            document.getElementById('timerDisplay4').style.display = 'none';
+            document.getElementById('toggleTimerBtn4').innerText = 'Show Timer';
+        }
+
+        timerInterval4 = setInterval(() => {
+            timeLeft4--;
+            document.getElementById('timerDisplay4').innerText = timeLeft4 + "s";
+            
+            if (timeLeft4 <= 6) {
+                document.getElementById('timerDisplay4').style.display = 'block';
+                document.getElementById('timerDisplay4').classList.add('warning');
+            } else if (globalTimerHidden) {
+                document.getElementById('timerDisplay4').style.display = 'none';
+            }
+            if (timeLeft4 <= 0) { clearInterval(timerInterval4); processSequenceAnswer4(); }
+        }, 1000);
+    }
+
+    document.getElementById('toggleTimerBtn4').addEventListener('click', function() {
+        globalTimerHidden = !globalTimerHidden;
+        document.getElementById('timerDisplay4').style.display = globalTimerHidden ? 'none' : 'block';
+        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
+    });
+
+    document.getElementById('submit-sequence-4').addEventListener('click', processSequenceAnswer4);
+    document.getElementById('answerInput4').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer4(); });
+
+    function processSequenceAnswer4() {
+        clearInterval(timerInterval4);
+        const raw = document.getElementById('answerInput4').value;
+        const isCorrect = (raw.replace(/\s+/g, '') === "22");
+
+        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
+        results.push({ question: "sequence_4", input: raw, correct: isCorrect, timeLeft: timeLeft4 });
+        sessionStorage.setItem('testResults', JSON.stringify(results));
+
+        // --- FINAL SUBMISSION LOGIC MOVED HERE ---
         const totalScore = results.filter(answer => answer.correct).length;
-        
-        // Optional: Calculate total time saved
         const totalTimeSaved = results.reduce((sum, answer) => sum + answer.timeLeft, 0);
 
-        // --- NEW: Send Final Score to Database ---
         fetch('https://pc-iq-test.onrender.com/submit-results', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -524,10 +576,10 @@
                 timeLeftTotal: totalTimeSaved
             })
         }).finally(() => {
-            // Once sent, immediately trigger the leaderboard view!
             showLeaderboard(totalScore);
         });
     }
+
 </script>
 
 </body>
