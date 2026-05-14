@@ -267,32 +267,7 @@
         <h2>Complete the sequence:</h2>
         <p class="sequence">1, 2, 4, 7, 11, 16, ?</p>
         
-        <div class="options-container-6">
-            <label class="radio-option matrix-choice">
-                <img src="https://via.placeholder.com/150?text=A" alt="Choice A">
-                <input type="radio" name="q4-answer" value="A">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://via.placeholder.com/150?text=B" alt="Choice B">
-                <input type="radio" name="q4-answer" value="B">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://via.placeholder.com/150?text=C" alt="Choice C">
-                <input type="radio" name="q4-answer" value="C">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://via.placeholder.com/150?text=D" alt="Choice D">
-                <input type="radio" name="q4-answer" value="D">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://via.placeholder.com/150?text=E" alt="Choice E">
-                <input type="radio" name="q4-answer" value="E">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://via.placeholder.com/150?text=F" alt="Choice F">
-                <input type="radio" name="q4-answer" value="F">
-            </label>
-        </div>
+        <input type="text" id="answerInput4" class="answer-input" placeholder="?" autocomplete="off">
         
         <button id="submit-sequence-4">Next</button>
     </div>
@@ -632,7 +607,7 @@
     }
 
     // ==========================================
-    // --- QUESTION 4 LOGIC (NOW MULTIPLE CHOICE) ---
+    // --- QUESTION 4 LOGIC (Restored to Text) ---
     // ==========================================
     function startSequenceTimer4() {
         if (globalTimerHidden) {
@@ -661,19 +636,18 @@
     });
 
     document.getElementById('submit-sequence-4').addEventListener('click', processSequenceAnswer4);
+    // Added back the keypress listener so "Enter" works
+    document.getElementById('answerInput4').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer4(); });
 
     function processSequenceAnswer4() {
         clearInterval(timerInterval4);
         
-        // Grab the checked radio button
-        const selectedOption = document.querySelector('input[name="q4-answer"]:checked');
-        const rawInput = selectedOption ? selectedOption.value : ""; 
-        
-        // The correct answer for Q4 is explicitly set to "A"
-        const isCorrect = (rawInput === "A"); 
+        // Grab the text value instead of radio buttons
+        const raw = document.getElementById('answerInput4').value;
+        const isCorrect = (raw.replace(/\s+/g, '') === "22"); 
 
         const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "sequence_4", input: rawInput, correct: isCorrect, timeLeft: timeLeft4 });
+        results.push({ question: "sequence_4", input: raw, correct: isCorrect, timeLeft: timeLeft4 });
         sessionStorage.setItem('testResults', JSON.stringify(results));
 
         document.getElementById('sequence-page-4').style.display = 'none';
@@ -718,7 +692,6 @@
         const selectedOption = document.querySelector('input[name="q5-answer"]:checked');
         const rawInput = selectedOption ? selectedOption.value : ""; 
         
-        // Target answer explicitly set to A as requested
         const isCorrect = (rawInput === "A");
 
         const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
