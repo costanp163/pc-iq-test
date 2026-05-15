@@ -441,7 +441,58 @@
         <button id="submit-vocab-3">Next</button>
     </div>
 
-    <!-- Q14: Matrix (Final) -->
+    <!-- Q14: Analogy 1 -->
+    <div id="question-page-analogy-1" style="display: none;">
+        <header class="top-bar">
+            <button class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplayAnalogy1" class="timer">40s</div>
+        </header>
+        <h2>Analogy:</h2>
+        <p class="problem-text">Identify the word that completes the analogy by matching the relationship of the first pair:<br><br><strong style="font-size: 1.5rem; letter-spacing: 2px;">Chef : Kitchen :: Teacher : [ ? ]</strong></p>
+        <div class="options-container">
+            <label class="radio-option"><span>A) Book</span><input type="radio" name="q-analogy-1" value="A"></label>
+            <label class="radio-option"><span>B) Classroom</span><input type="radio" name="q-analogy-1" value="B"></label>
+            <label class="radio-option"><span>C) Student</span><input type="radio" name="q-analogy-1" value="C"></label>
+            <label class="radio-option"><span>D) Desk</span><input type="radio" name="q-analogy-1" value="D"></label>
+        </div>
+        <button id="submit-analogy-1">Next</button>
+    </div>
+
+    <!-- Q15: Analogy 2 -->
+    <div id="question-page-analogy-2" style="display: none;">
+        <header class="top-bar">
+            <button class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplayAnalogy2" class="timer">40s</div>
+        </header>
+        <h2>Analogy:</h2>
+        <p class="problem-text">Identify the word that completes the analogy by matching the relationship of the first pair:<br><br><strong style="font-size: 1.5rem; letter-spacing: 2px;">Scalpel : Surgeon :: Gavel : [ ? ]</strong></p>
+        <div class="options-container">
+            <label class="radio-option"><span>A) Courtroom</span><input type="radio" name="q-analogy-2" value="A"></label>
+            <label class="radio-option"><span>B) Lawyer</span><input type="radio" name="q-analogy-2" value="B"></label>
+            <label class="radio-option"><span>C) Judge</span><input type="radio" name="q-analogy-2" value="C"></label>
+            <label class="radio-option"><span>D) Justice</span><input type="radio" name="q-analogy-2" value="D"></label>
+        </div>
+        <button id="submit-analogy-2">Next</button>
+    </div>
+
+    <!-- Q16: Analogy 3 -->
+    <div id="question-page-analogy-3" style="display: none;">
+        <header class="top-bar">
+            <button class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplayAnalogy3" class="timer">40s</div>
+        </header>
+        <h2>Analogy:</h2>
+        <p class="problem-text">Identify the word that completes the analogy by determining the precise shift in intensity or degree between the words:<br><br><strong style="font-size: 1.5rem; letter-spacing: 2px;">Glance : Scrutinize :: Whisper : [ ? ]</strong></p>
+        <div class="options-container">
+            <label class="radio-option"><span>A) Speak</span><input type="radio" name="q-analogy-3" value="A"></label>
+            <label class="radio-option"><span>B) Shout</span><input type="radio" name="q-analogy-3" value="B"></label>
+            <label class="radio-option"><span>C) Listen</span><input type="radio" name="q-analogy-3" value="C"></label>
+            <label class="radio-option"><span>D) Mutter</span><input type="radio" name="q-analogy-3" value="D"></label>
+        </div>
+        <button id="submit-analogy-3">Next</button>
+    </div>
+
+    <!-- Q17: Matrix (Final) -->
     <div id="question-page-5" style="display: none;">
         <header class="top-bar">
             <button class="toggle-btn">Hide Timer</button>
@@ -465,7 +516,7 @@
     <!-- Final Page -->
     <div id="final-page" style="display:none;">
         <h1>Test Complete!</h1>
-        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 14</h2>
+        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 17</h2>
         <div style="background: #f8f9fa; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-top: 20px;">
             <h3 style="color: #2c3e50; margin-bottom: 10px;">Global Leaderboard</h3>
             <ul id="leaderboard-list" style="list-style-type: none; padding: 0; text-align: left; margin: 0; max-height: 200px; overflow-y: auto;"></ul>
@@ -502,7 +553,7 @@
     function showLeaderboard(userScore) {
         document.querySelectorAll('.welcome-card > div').forEach(div => div.style.display = 'none');
         document.getElementById('final-page').style.display = 'block';
-        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 14`;
+        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 17`;
         fetch('https://pc-iq-test.onrender.com/leaderboard').then(res => res.json()).then(allUsers => {
             const list = document.getElementById('leaderboard-list');
             list.innerHTML = allUsers.map((u, index) => {
@@ -618,9 +669,21 @@
 
     // Q13 (Vocab 3)
     document.getElementById('submit-vocab-3').onclick = processAnswerVocab3;
-    function processAnswerVocab3() { const sel = document.querySelector('input[name="q-vocab-3"]:checked'); handleAnswer("vocab3", sel?sel.value:"", "B", "question-page-5", () => startTimer(40, 'timerDisplay5', processAnswer5)); }
+    function processAnswerVocab3() { const sel = document.querySelector('input[name="q-vocab-3"]:checked'); handleAnswer("vocab3", sel?sel.value:"", "B", "question-page-analogy-1", () => startTimer(40, 'timerDisplayAnalogy1', processAnswerAnalogy1)); }
 
-    // Q14 (Final Matrix)
+    // Q14 (Analogy 1)
+    document.getElementById('submit-analogy-1').onclick = processAnswerAnalogy1;
+    function processAnswerAnalogy1() { const sel = document.querySelector('input[name="q-analogy-1"]:checked'); handleAnswer("analogy1", sel?sel.value:"", "B", "question-page-analogy-2", () => startTimer(40, 'timerDisplayAnalogy2', processAnswerAnalogy2)); }
+
+    // Q15 (Analogy 2)
+    document.getElementById('submit-analogy-2').onclick = processAnswerAnalogy2;
+    function processAnswerAnalogy2() { const sel = document.querySelector('input[name="q-analogy-2"]:checked'); handleAnswer("analogy2", sel?sel.value:"", "C", "question-page-analogy-3", () => startTimer(40, 'timerDisplayAnalogy3', processAnswerAnalogy3)); }
+
+    // Q16 (Analogy 3)
+    document.getElementById('submit-analogy-3').onclick = processAnswerAnalogy3;
+    function processAnswerAnalogy3() { const sel = document.querySelector('input[name="q-analogy-3"]:checked'); handleAnswer("analogy3", sel?sel.value:"", "B", "question-page-5", () => startTimer(40, 'timerDisplay5', processAnswer5)); }
+
+    // Q17 (Final Matrix)
     document.getElementById('submit-question-5').onclick = processAnswer5;
     function processAnswer5() {
         if (currentTimerInterval) clearInterval(currentTimerInterval);
