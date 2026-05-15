@@ -80,9 +80,10 @@
         .toggle-btn { background: #ecf0f1; color: #2c3e50; border: 1px solid #bdc3c7; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; width: auto; margin-top: 0; }
         
         .sequence { font-size: 1.8rem; font-weight: bold; color: #34495e; margin: 20px 0; letter-spacing: 2px;}
+        .problem-text { font-size: 1.1rem; text-align: left; color: #34495e; margin-bottom: 20px; line-height: 1.6; }
         .answer-input { padding: 10px; width: 80px; text-align: center; font-size: 1.2rem; border: 2px solid #3498db; border-radius: 5px; margin: 0 auto; display: block; }
     
-        /* 2x2 Grid Layout for Multiple Choice Options */
+        /* Layouts for Multiple Choice Options */
         .options-container { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
@@ -90,7 +91,6 @@
             margin: 20px 0; 
         }
 
-        /* 3x2 Grid Layout for 6 Options (Matrix Question) */
         .options-container-6 { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
@@ -98,14 +98,14 @@
             margin: 25px 0; 
         }
 
-        /* Standardized Selectable Choice Cards */
+        /* Selectable Choice Cards */
         .radio-option {
             background: #ffffff; 
             border: 2px solid #e2e8f0; 
-            padding: 20px 10px; 
+            padding: 15px 10px; 
             border-radius: 8px; 
             cursor: pointer; 
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #2c3e50;
             transition: all 0.2s ease-in-out;
@@ -122,12 +122,10 @@
             transform: translateY(-2px);
         }
 
-        /* Completely hide radio buttons to rely on card borders */
         .radio-option input[type="radio"] { 
             display: none; 
         }
 
-        /* Highlight box container when selection matches */
         .radio-option:has(input[type="radio"]:checked) {
             border-color: #3498db !important;
             background-color: #f4faff !important;
@@ -180,6 +178,7 @@
 
 <div class="welcome-card">
     
+    <!-- Screen 1: Login -->
     <div id="screen-welcome">
         <h1>P.C. IQ Test</h1>
         <h3>Iteration 1</h3>
@@ -190,6 +189,7 @@
         <button id="btn-login">Login / Start</button>
     </div>
 
+    <!-- Demographics -->
     <div id="screen-demographics" style="display: none;">
         <h1>Demographics</h1>
         <form id="welcome-form">
@@ -210,6 +210,7 @@
         </form>
     </div>
 
+    <!-- Quick Question -->
     <div id="screen-test" style="display: none;">
         <h1>Quick Question</h1>
         <div class="form-group">
@@ -222,6 +223,7 @@
         <button id="final-next">Next</button>
     </div>
 
+    <!-- Prediction -->
     <div id="prediction-page" style="display:none;">
         <h1>Prediction</h1>
         <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px;"><i>What score do you think you will get?</i></p>
@@ -232,9 +234,10 @@
         <button id="skip-prediction" style="background-color: #95a5a6; margin-top: 10px;">Skip</button>
     </div>
 
+    <!-- Q1 -->
     <div id="sequence-page" style="display: none;">
         <header class="top-bar">
-            <button id="toggleTimerBtn" class="toggle-btn">Hide Timer</button>
+            <button class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay" class="timer">40s</div>
         </header>
         <h2>Complete the sequence:</h2>
@@ -243,9 +246,10 @@
         <button id="submit-sequence">Next</button>
     </div>
 
+    <!-- Q2 -->
     <div id="sequence-page-2" style="display: none;">
         <header class="top-bar">
-            <button id="toggleTimerBtn2" class="toggle-btn">Hide Timer</button>
+            <button class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay2" class="timer">40s</div>
         </header>
         <h2>Complete the sequence:</h2>
@@ -254,129 +258,130 @@
         <button id="submit-sequence-2">Next</button>
     </div>
 
+    <!-- Q3: Baseline -->
     <div id="question-page-3-new" style="display: none;">
         <header class="top-bar">
-            <button id="toggleTimerBtn3New" class="toggle-btn">Hide Timer</button>
+            <button class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay3New" class="timer">40s</div>
         </header>
         <h2>Complete the sequence:</h2>
         <p class="sequence" style="font-size:1.5rem;">B2, D4, F6, H8, [ ? ]</p>
-        
         <div class="options-container">
-            <label class="radio-option">
-                <span>A) I10</span>
-                <input type="radio" name="q3-new-answer" value="A">
-            </label>
-            <label class="radio-option">
-                <span>B) J9</span>
-                <input type="radio" name="q3-new-answer" value="B">
-            </label>
-            <label class="radio-option">
-                <span>C) J10</span>
-                <input type="radio" name="q3-new-answer" value="C">
-            </label>
-            <label class="radio-option">
-                <span>D) K10</span>
-                <input type="radio" name="q3-new-answer" value="D">
-            </label>
+            <label class="radio-option"><span>A) I10</span><input type="radio" name="q3-new-answer" value="A"></label>
+            <label class="radio-option"><span>B) J9</span><input type="radio" name="q3-new-answer" value="B"></label>
+            <label class="radio-option"><span>C) J10</span><input type="radio" name="q3-new-answer" value="C"></label>
+            <label class="radio-option"><span>D) K10</span><input type="radio" name="q3-new-answer" value="D"></label>
         </div>
         <button id="submit-question-3-new">Next</button>
     </div>
 
+    <!-- Q4: Intermediate -->
     <div id="question-page-4-new" style="display: none;">
         <header class="top-bar">
-            <button id="toggleTimerBtn4New" class="toggle-btn">Hide Timer</button>
+            <button class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay4New" class="timer">40s</div>
         </header>
         <h2>Complete the sequence:</h2>
         <p class="sequence" style="font-size:1.5rem;">Z1, W2, T4, Q7, [ ? ]</p>
-        
         <div class="options-container">
-            <label class="radio-option">
-                <span>A) N10</span>
-                <input type="radio" name="q4-new-answer" value="A">
-            </label>
-            <label class="radio-option">
-                <span>B) N11</span>
-                <input type="radio" name="q4-new-answer" value="B">
-            </label>
-            <label class="radio-option">
-                <span>C) O11</span>
-                <input type="radio" name="q4-new-answer" value="C">
-            </label>
-            <label class="radio-option">
-                <span>D) M12</span>
-                <input type="radio" name="q4-new-answer" value="D">
-            </label>
+            <label class="radio-option"><span>A) N10</span><input type="radio" name="q4-new-answer" value="A"></label>
+            <label class="radio-option"><span>B) N11</span><input type="radio" name="q4-new-answer" value="B"></label>
+            <label class="radio-option"><span>C) O11</span><input type="radio" name="q4-new-answer" value="C"></label>
+            <label class="radio-option"><span>D) M12</span><input type="radio" name="q4-new-answer" value="D"></label>
         </div>
         <button id="submit-question-4-new">Next</button>
     </div>
 
+    <!-- Q5: High-Range Operator -->
     <div id="question-page-5-new" style="display: none;">
         <header class="top-bar">
-            <button id="toggleTimerBtn5New" class="toggle-btn">Hide Timer</button>
+            <button class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay5New" class="timer">40s</div>
         </header>
-        <h2 style="font-size:1.3rem; margin-bottom:5px;">Determine the relationship:</h2>
-        <div style="background:#f8f9fa; border-radius:8px; padding:10px 0; font-family:monospace; font-size:1.1rem; color:#2c3e50; margin:10px 0; line-height:1.5;">
-            (2, 3) = 10<br>
-            (3, 5) = 24<br>
-            (4, 2) = 24<br>
-            (5, 6) = [ ? ]
+        <h2 style="font-size:1.3rem;">Determine the relationship:</h2>
+        <div style="background:#f8f9fa; border-radius:8px; padding:10px 0; font-family:monospace; font-size:1.1rem; margin:10px 0; line-height:1.5;">
+            (2, 3) = 10<br>(3, 5) = 24<br>(4, 2) = 24<br>(5, 6) = [ ? ]
         </div>
-        
         <div class="options-container">
-            <label class="radio-option">
-                <span>A) 55</span>
-                <input type="radio" name="q5-new-answer" value="A">
-            </label>
-            <label class="radio-option">
-                <span>B) 60</span>
-                <input type="radio" name="q5-new-answer" value="B">
-            </label>
-            <label class="radio-option">
-                <span>C) 66</span>
-                <input type="radio" name="q5-new-answer" value="C">
-            </label>
-            <label class="radio-option">
-                <span>D) 121</span>
-                <input type="radio" name="q5-new-answer" value="D">
-            </label>
+            <label class="radio-option"><span>A) 55</span><input type="radio" name="q5-new-answer" value="A"></label>
+            <label class="radio-option"><span>B) 60</span><input type="radio" name="q5-new-answer" value="B"></label>
+            <label class="radio-option"><span>C) 66</span><input type="radio" name="q5-new-answer" value="C"></label>
+            <label class="radio-option"><span>D) 121</span><input type="radio" name="q5-new-answer" value="D"></label>
         </div>
         <button id="submit-question-5-new">Next</button>
     </div>
 
+    <!-- Q6: The Step-Up -->
+    <div id="question-page-6-new" style="display: none;">
+        <header class="top-bar">
+            <button class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplay6New" class="timer">40s</div>
+        </header>
+        <h2>Logic Problem:</h2>
+        <p class="problem-text">A worker takes exactly 8 minutes to saw a long titanium pipe into 3 equal pieces. Assuming the worker cuts at a constant rate, how many minutes will it take them to saw an identical pipe into 6 equal pieces?</p>
+        <div class="options-container">
+            <label class="radio-option"><span>A) 16 minutes</span><input type="radio" name="q6-new-answer" value="A"></label>
+            <label class="radio-option"><span>B) 18 minutes</span><input type="radio" name="q6-new-answer" value="B"></label>
+            <label class="radio-option"><span>C) 20 minutes</span><input type="radio" name="q6-new-answer" value="C"></label>
+            <label class="radio-option"><span>D) 24 minutes</span><input type="radio" name="q6-new-answer" value="D"></label>
+        </div>
+        <button id="submit-question-6-new">Next</button>
+    </div>
+
+    <!-- Q7: Variable Isolation -->
+    <div id="question-page-7-new" style="display: none;">
+        <header class="top-bar">
+            <button class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplay7New" class="timer">40s</div>
+        </header>
+        <h2>Logic Problem:</h2>
+        <p class="problem-text">Three collectors share 36 rare coins. First, Roy gives half of his coins to Sam. Next, Sam gives one-third of his total coins to Ted. Each now holds an equal number of coins. How many coins did Roy have at the start?</p>
+        <div class="options-container">
+            <label class="radio-option"><span>A) 18</span><input type="radio" name="q7-new-answer" value="A"></label>
+            <label class="radio-option"><span>B) 24</span><input type="radio" name="q7-new-answer" value="B"></label>
+            <label class="radio-option"><span>C) 27</span><input type="radio" name="q7-new-answer" value="C"></label>
+            <label class="radio-option"><span>D) 30</span><input type="radio" name="q7-new-answer" value="D"></label>
+        </div>
+        <button id="submit-question-7-new">Next</button>
+    </div>
+
+    <!-- Q8: High-Range Concentration -->
+    <div id="question-page-8-new" style="display: none;">
+        <header class="top-bar">
+            <button class="toggle-btn">Hide Timer</button>
+            <div id="timerDisplay8New" class="timer">40s</div>
+        </header>
+        <h2>Averages & Percentages:</h2>
+        <p class="problem-text">The overall average score for a tech company is 80. "Senior" engineers average 85, while those who are not average 60. What percentage of the engineers earned the "Senior" designation?</p>
+        <div class="options-container">
+            <label class="radio-option"><span>A) 65%</span><input type="radio" name="q8-new-answer" value="A"></label>
+            <label class="radio-option"><span>B) 75%</span><input type="radio" name="q8-new-answer" value="B"></label>
+            <label class="radio-option"><span>C) 80%</span><input type="radio" name="q8-new-answer" value="C"></label>
+            <label class="radio-option"><span>D) 85%</span><input type="radio" name="q8-new-answer" value="D"></label>
+        </div>
+        <button id="submit-question-8-new">Next</button>
+    </div>
+
+    <!-- Q9: Old Q3 -->
     <div id="question-page-3" style="display: none;">
         <header class="top-bar">
-            <button id="toggleTimerBtn3" class="toggle-btn">Hide Timer</button>
+            <button class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay3" class="timer">40s</div>
         </header>
         <h2>Which does not belong?</h2>
-        
         <div class="options-container">
-            <label class="radio-option">
-                <span>Sphere</span>
-                <input type="radio" name="q3-answer" value="Sphere">
-            </label>
-            <label class="radio-option">
-                <span>Circle</span>
-                <input type="radio" name="q3-answer" value="Circle">
-            </label>
-            <label class="radio-option">
-                <span>Square</span>
-                <input type="radio" name="q3-answer" value="Square">
-            </label>
-            <label class="radio-option">
-                <span>Triangle</span>
-                <input type="radio" name="q3-answer" value="Triangle">
-            </label>
+            <label class="radio-option"><span>Sphere</span><input type="radio" name="q3-answer" value="Sphere"></label>
+            <label class="radio-option"><span>Circle</span><input type="radio" name="q3-answer" value="Circle"></label>
+            <label class="radio-option"><span>Square</span><input type="radio" name="q3-answer" value="Square"></label>
+            <label class="radio-option"><span>Triangle</span><input type="radio" name="q3-answer" value="Triangle"></label>
         </div>
         <button id="submit-question-3">Next</button>
     </div>
 
+    <!-- Q10: Old Q4 -->
     <div id="sequence-page-4" style="display: none;">
         <header class="top-bar">
-            <button id="toggleTimerBtn4" class="toggle-btn">Hide Timer</button>
+            <button class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay4" class="timer">40s</div>
         </header>
         <h2>Complete the sequence:</h2>
@@ -385,569 +390,222 @@
         <button id="submit-sequence-4">Next</button>
     </div>
 
+    <!-- Q11: Matrix -->
     <div id="question-page-5" style="display: none;">
         <header class="top-bar">
-            <button id="toggleTimerBtn5" class="toggle-btn">Hide Timer</button>
+            <button class="toggle-btn">Hide Timer</button>
             <div id="timerDisplay5" class="timer">40s</div>
         </header>
         <h2 style="font-size: 1.2rem;">Which piece completes the pattern?</h2>
-
         <div class="matrix-main-grid">
-            <img src="https://i.postimg.cc/2SWsLQVq/1.png" alt="">
-            <img src="https://i.postimg.cc/Ss92wtsy/2.png" alt="">
-            <img src="https://i.postimg.cc/NFLVsTWb/3.png" alt="">
-            <img src="https://i.postimg.cc/fTtF1c78/4.png" alt="">
-            <img src="https://i.postimg.cc/1t37Bw5w/5.png" alt="">
-            <img src="https://i.postimg.cc/SKygQC8b/6.png" alt="">
-            <img src="https://i.postimg.cc/NFLVsTWb/3.png" alt="">
-            <img src="https://i.postimg.cc/SKygQC8b/6.png" alt="">
-            <div class="matrix-missing-piece">?</div>
+            <img src="https://i.postimg.cc/2SWsLQVq/1.png" alt=""><img src="https://i.postimg.cc/Ss92wtsy/2.png" alt=""><img src="https://i.postimg.cc/NFLVsTWb/3.png" alt=""><img src="https://i.postimg.cc/fTtF1c78/4.png" alt=""><img src="https://i.postimg.cc/1t37Bw5w/5.png" alt=""><img src="https://i.postimg.cc/SKygQC8b/6.png" alt=""><img src="https://i.postimg.cc/NFLVsTWb/3.png" alt=""><img src="https://i.postimg.cc/SKygQC8b/6.png" alt=""><div class="matrix-missing-piece">?</div>
         </div>
-
         <div class="options-container-6">
-            <label class="radio-option matrix-choice">
-                <img src="https://i.postimg.cc/Twb0C0vm/a3.png" alt="">
-                <input type="radio" name="q5-answer" value="A">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://i.postimg.cc/NFLVsTWb/3.png" alt="">
-                <input type="radio" name="q5-answer" value="B">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://i.postimg.cc/Ss92wtsy/2.png" alt="">
-                <input type="radio" name="q5-answer" value="C">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://i.postimg.cc/SKygQC8b/6.png" alt="">
-                <input type="radio" name="q5-answer" value="D">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://i.postimg.cc/YCVQZF34/a5.png" alt="">
-                <input type="radio" name="q5-answer" value="E">
-            </label>
-            <label class="radio-option matrix-choice">
-                <img src="https://i.postimg.cc/sx6MSFH1/a6.png" alt="">
-                <input type="radio" name="q5-answer" value="F">
-            </label>
+            <label class="radio-option matrix-choice"><img src="https://i.postimg.cc/Twb0C0vm/a3.png" alt=""><input type="radio" name="q5-answer" value="A"></label>
+            <label class="radio-option matrix-choice"><img src="https://i.postimg.cc/NFLVsTWb/3.png" alt=""><input type="radio" name="q5-answer" value="B"></label>
+            <label class="radio-option matrix-choice"><img src="https://i.postimg.cc/Ss92wtsy/2.png" alt=""><input type="radio" name="q5-answer" value="C"></label>
+            <label class="radio-option matrix-choice"><img src="https://i.postimg.cc/SKygQC8b/6.png" alt=""><input type="radio" name="q5-answer" value="D"></label>
+            <label class="radio-option matrix-choice"><img src="https://i.postimg.cc/YCVQZF34/a5.png" alt=""><input type="radio" name="q5-answer" value="E"></label>
+            <label class="radio-option matrix-choice"><img src="https://i.postimg.cc/sx6MSFH1/a6.png" alt=""><input type="radio" name="q5-answer" value="F"></label>
         </div>
-
         <button id="submit-question-5">Finish Test</button>
     </div>
 
+    <!-- Final Page -->
     <div id="final-page" style="display:none;">
         <h1>Test Complete!</h1>
-        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 8</h2>
-        
+        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 11</h2>
         <div style="background: #f8f9fa; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-top: 20px;">
             <h3 style="color: #2c3e50; margin-bottom: 10px;">Global Leaderboard</h3>
-            <ul id="leaderboard-list" style="list-style-type: none; padding: 0; text-align: left; margin: 0; max-height: 200px; overflow-y: auto;">
-                </ul>
+            <ul id="leaderboard-list" style="list-style-type: none; padding: 0; text-align: left; margin: 0; max-height: 200px; overflow-y: auto;"></ul>
         </div>
     </div>
 
 </div> 
 
 <script>
-    // --- GLOBAL STATE ---
+    // --- STABLE TIMER ARCHITECTURE ---
+    // Instead of multiple timers overlapping, we only ever use ONE global interval.
+    let currentTimerInterval = null; 
     let globalTimerHidden = false; 
     let globalUsername = ""; 
 
-    // Question Specific Timers
-    let timeLeft = 40; let timerInterval;
-    let timeLeft2 = 40; let timerInterval2;
-    let timeLeft3New = 40; let timerInterval3New;
-    let timeLeft4New = 40; let timerInterval4New;
-    let timeLeft5New = 40; let timerInterval5New;
-    let timeLeft3 = 40; let timerInterval3;
-    let timeLeft4 = 40; let timerInterval4;
-    let timeLeft5 = 40; let timerInterval5; 
+    function startTimer(duration, displayId, nextFunc) {
+        // ALWAYS kill any background timer before starting a new one
+        if (currentTimerInterval) clearInterval(currentTimerInterval); 
+        
+        let time = duration;
+        const display = document.getElementById(displayId);
+        
+        // Reset the visual state for the new timer
+        display.classList.remove('warning');
+        display.innerText = time + "s";
+        display.style.display = globalTimerHidden ? 'none' : 'block';
 
-    // --- LOGIN LOGIC ---
+        currentTimerInterval = setInterval(() => {
+            time--;
+            display.innerText = time + "s";
+            
+            if (time <= 6) { 
+                display.style.display = 'block'; 
+                display.classList.add('warning'); 
+            }
+            if (time <= 0) { 
+                clearInterval(currentTimerInterval); 
+                nextFunc(0); // Auto advance when time runs out
+            }
+        }, 1000);
+    }
+
+    // --- SHARED DATA HANDLER ---
+    function handleAnswer(qId, rawVal, correctVal, nextDivId, nextTimerInit) {
+        // ALWAYS clear the timer upon manual submission
+        if (currentTimerInterval) clearInterval(currentTimerInterval);
+
+        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
+        const isCorrect = (typeof correctVal === 'string') ? (rawVal.trim().toUpperCase() === correctVal.toUpperCase()) : (rawVal === correctVal);
+        results.push({ qId, input: rawVal, correct: isCorrect });
+        sessionStorage.setItem('testResults', JSON.stringify(results));
+        
+        // Hide everything, then show the next screen
+        document.querySelectorAll('.welcome-card > div').forEach(div => div.style.display = 'none');
+        document.getElementById(nextDivId).style.display = 'block';
+        
+        // Start the next timer
+        if (nextTimerInit) nextTimerInit();
+    }
+
+    // --- API LOGIC ---
     document.getElementById('btn-login').addEventListener('click', function() {
         const usernameInput = document.getElementById('username').value.trim();
-        if (!usernameInput) {
-            alert("Please enter a username.");
-            return;
-        }
-        
+        if (!usernameInput) { alert("Please enter a username."); return; }
         globalUsername = usernameInput; 
-        
         fetch('https://pc-iq-test.onrender.com/login-or-register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: globalUsername })
-        })
-        .then(res => res.json())
-        .then(data => {
+        }).then(res => res.json()).then(data => {
             if (data.status === 'exists' && data.user.testResults && data.user.testResults.length > 0) {
                 showLeaderboard(data.user.totalScore);
             } else {
                 sessionStorage.removeItem('testResults');
-                document.getElementById('screen-welcome').style.display = 'none';
+                document.querySelectorAll('.welcome-card > div').forEach(div => div.style.display = 'none');
                 document.getElementById('screen-demographics').style.display = 'block';
             }
-        })
-        .catch(err => {
-            console.error(err);
-            document.getElementById('screen-welcome').style.display = 'none';
-            document.getElementById('screen-demographics').style.display = 'block';
         });
     });
 
-    // --- LEADERBOARD LOGIC ---
-    function showLeaderboard(userScore) {
-        document.getElementById('screen-welcome').style.display = 'none';
-        document.getElementById('screen-demographics').style.display = 'none';
-        document.getElementById('question-page-5').style.display = 'none';
-        
-        document.getElementById('final-page').style.display = 'block';
-        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 8`;
-        
-        fetch('https://pc-iq-test.onrender.com/leaderboard')
-            .then(res => res.json())
-            .then(allUsers => {
-                const list = document.getElementById('leaderboard-list');
-                if (allUsers.length === 0) {
-                    list.innerHTML = "<li>No scores yet!</li>";
-                    return;
-                }
-                list.innerHTML = allUsers.map((u, index) => {
-                    const isCurrentUser = u.username === globalUsername;
-                    const style = isCurrentUser ? 'font-weight: bold; color: #3498db; background: #ebf5fb; padding: 5px;' : 'padding: 5px 0;';
-                    return `
-                    <li style="border-bottom: 1px solid #eee; ${style}">
-                        <strong>#${index + 1}</strong> - ${u.username}: ${u.totalScore} pts
-                    </li>`;
-                }).join('');
-            })
-            .catch(() => {
-                document.getElementById('leaderboard-list').innerHTML = "<li>Leaderboard unavailable</li>";
-            });
-    }
-
-    // --- FLOW CONTROL ---
-    function goToNextSection() {
-        document.getElementById('prediction-page').style.display = 'none';
-        document.getElementById('sequence-page').style.display = 'block';
-        startSequenceTimer(); 
-    }
-
-    // --- API & DB LISTENERS ---
-    document.getElementById('welcome-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const userData = {
-            username: globalUsername, 
-            age: document.getElementById('age').value,
-            sex: document.getElementById('sex').value
-        };
-
-        fetch('https://pc-iq-test.onrender.com/submit-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        }).then(response => {
-            if (response.ok) {
-                document.getElementById('screen-demographics').style.display = 'none';
-                document.getElementById('screen-test').style.display = 'block';
-            }
-        }).catch(() => {
-            document.getElementById('screen-demographics').style.display = 'none';
-            document.getElementById('screen-test').style.display = 'block';
-        });
+    document.getElementById('welcome-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        fetch('https://pc-iq-test.onrender.com/submit-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: globalUsername, age: document.getElementById('age').value, sex: document.getElementById('sex').value }) })
+        .then(() => { document.getElementById('screen-demographics').style.display = 'none'; document.getElementById('screen-test').style.display = 'block'; });
     });
 
     document.getElementById('final-next').addEventListener('click', function() {
-        const exp = document.getElementById('experience').value;
-        fetch('https://pc-iq-test.onrender.com/update-experience', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: globalUsername, hasTakenBefore: exp })
-        }).finally(() => {
-            document.getElementById('screen-test').style.display = 'none';
-            document.getElementById('prediction-page').style.display = 'block';
-        });
+        fetch('https://pc-iq-test.onrender.com/update-experience', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: globalUsername, hasTakenBefore: document.getElementById('experience').value }) })
+        .then(() => { document.getElementById('screen-test').style.display = 'none'; document.getElementById('prediction-page').style.display = 'block'; });
     });
 
     document.getElementById('submit-prediction').addEventListener('click', function() {
         const pred = parseInt(document.getElementById('predicted-input').value);
-        if (pred >= 50 && pred <= 180) {
-            fetch('https://pc-iq-test.onrender.com/submit-prediction', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: globalUsername, predictedScore: pred })
-            }).finally(() => { goToNextSection(); });
-        } else {
-            alert("Enter a score between 50 and 180, or press Skip.");
-        }
+        if (pred >= 50 && pred <= 180) { fetch('https://pc-iq-test.onrender.com/submit-prediction', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: globalUsername, predictedScore: pred }) }).then(goToNextSection); } else alert("Enter score 50-180");
     });
-
+    
     document.getElementById('skip-prediction').addEventListener('click', goToNextSection);
 
-    // ==========================================
-    // --- QUESTION 1 LOGIC ---
-    // ==========================================
-    function startSequenceTimer() {
-        if (globalTimerHidden) {
-            document.getElementById('timerDisplay').style.display = 'none';
-            document.getElementById('toggleTimerBtn').innerText = 'Show Timer';
-        }
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            document.getElementById('timerDisplay').innerText = timeLeft + "s";
-            if (timeLeft <= 6) {
-                document.getElementById('timerDisplay').style.display = 'block';
-                document.getElementById('timerDisplay').classList.add('warning');
-            } else if (globalTimerHidden) {
-                document.getElementById('timerDisplay').style.display = 'none';
-            }
-            if (timeLeft <= 0) { clearInterval(timerInterval); processSequenceAnswer(); }
-        }, 1000);
+    function goToNextSection() { 
+        document.getElementById('prediction-page').style.display = 'none'; 
+        document.getElementById('sequence-page').style.display = 'block'; 
+        startTimer(40, 'timerDisplay', processSequenceAnswer); 
     }
 
-    document.getElementById('toggleTimerBtn').addEventListener('click', function() {
-        globalTimerHidden = !globalTimerHidden;
-        document.getElementById('timerDisplay').style.display = globalTimerHidden ? 'none' : 'block';
-        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-    });
-
-    document.getElementById('submit-sequence').addEventListener('click', processSequenceAnswer);
+    // --- QUESTION PROCESSORS ---
+    // Q1
+    function processSequenceAnswer() { handleAnswer("seq1", document.getElementById('answerInput').value, "17", "sequence-page-2", () => startTimer(40, 'timerDisplay2', processSequenceAnswer2)); }
+    document.getElementById('submit-sequence').onclick = processSequenceAnswer;
     document.getElementById('answerInput').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer(); });
 
-    function processSequenceAnswer() {
-        clearInterval(timerInterval);
-        const raw = document.getElementById('answerInput').value;
-        const isCorrect = (raw.replace(/\s+/g, '') === "17");
-
-        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "sequence_1", input: raw, correct: isCorrect, timeLeft: timeLeft });
-        sessionStorage.setItem('testResults', JSON.stringify(results));
-
-        document.getElementById('sequence-page').style.display = 'none';
-        document.getElementById('sequence-page-2').style.display = 'block';
-        startSequenceTimer2(); 
-    }
-
-    // ==========================================
-    // --- QUESTION 2 LOGIC ---
-    // ==========================================
-    function startSequenceTimer2() {
-        if (globalTimerHidden) {
-            document.getElementById('timerDisplay2').style.display = 'none';
-            document.getElementById('toggleTimerBtn2').innerText = 'Show Timer';
-        }
-        timerInterval2 = setInterval(() => {
-            timeLeft2--;
-            document.getElementById('timerDisplay2').innerText = timeLeft2 + "s";
-            if (timeLeft2 <= 6) {
-                document.getElementById('timerDisplay2').style.display = 'block';
-                document.getElementById('timerDisplay2').classList.add('warning');
-            } else if (globalTimerHidden) {
-                document.getElementById('timerDisplay2').style.display = 'none';
-            }
-            if (timeLeft2 <= 0) { clearInterval(timerInterval2); processSequenceAnswer2(); }
-        }, 1000);
-    }
-
-    document.getElementById('toggleTimerBtn2').addEventListener('click', function() {
-        globalTimerHidden = !globalTimerHidden;
-        document.getElementById('timerDisplay2').style.display = globalTimerHidden ? 'none' : 'block';
-        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-    });
-
-    document.getElementById('submit-sequence-2').addEventListener('click', processSequenceAnswer2);
+    // Q2
+    function processSequenceAnswer2() { handleAnswer("seq2", document.getElementById('answerInput2').value, "P", "question-page-3-new", () => startTimer(40, 'timerDisplay3New', processAnswer3New)); }
+    document.getElementById('submit-sequence-2').onclick = processSequenceAnswer2;
     document.getElementById('answerInput2').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer2(); });
 
-    function processSequenceAnswer2() {
-        clearInterval(timerInterval2);
-        const raw = document.getElementById('answerInput2').value;
-        const isCorrect = (raw.replace(/\s+/g, '').toUpperCase() === "P");
+    // Q3
+    function processAnswer3New() { const sel = document.querySelector('input[name="q3-new-answer"]:checked'); handleAnswer("baseline", sel?sel.value:"", "C", "question-page-4-new", () => startTimer(40, 'timerDisplay4New', processAnswer4New)); }
+    document.getElementById('submit-question-3-new').onclick = processAnswer3New;
 
-        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "sequence_2", input: raw, correct: isCorrect, timeLeft: timeLeft2 });
-        sessionStorage.setItem('testResults', JSON.stringify(results));
+    // Q4
+    function processAnswer4New() { const sel = document.querySelector('input[name="q4-new-answer"]:checked'); handleAnswer("intermediate", sel?sel.value:"", "B", "question-page-5-new", () => startTimer(40, 'timerDisplay5New', processAnswer5New)); }
+    document.getElementById('submit-question-4-new').onclick = processAnswer4New;
 
-        document.getElementById('sequence-page-2').style.display = 'none';
-        document.getElementById('question-page-3-new').style.display = 'block';
-        startTimer3New(); 
-    }
+    // Q5
+    function processAnswer5New() { const sel = document.querySelector('input[name="q5-new-answer"]:checked'); handleAnswer("highrange", sel?sel.value:"", "A", "question-page-6-new", () => startTimer(40, 'timerDisplay6New', processAnswer6New)); }
+    document.getElementById('submit-question-5-new').onclick = processAnswer5New;
 
-    // ==========================================
-    // --- NEW: QUESTION 3 LOGIC (Baseline Alphanumeric) ---
-    // ==========================================
-    function startTimer3New() {
-        if (globalTimerHidden) {
-            document.getElementById('timerDisplay3New').style.display = 'none';
-            document.getElementById('toggleTimerBtn3New').innerText = 'Show Timer';
-        }
-        timerInterval3New = setInterval(() => {
-            timeLeft3New--;
-            document.getElementById('timerDisplay3New').innerText = timeLeft3New + "s";
-            if (timeLeft3New <= 6) {
-                document.getElementById('timerDisplay3New').style.display = 'block';
-                document.getElementById('timerDisplay3New').classList.add('warning');
-            } else if (globalTimerHidden) {
-                document.getElementById('timerDisplay3New').style.display = 'none';
-            }
-            if (timeLeft3New <= 0) { clearInterval(timerInterval3New); processAnswer3New(); }
-        }, 1000);
-    }
+    // Q6
+    function processAnswer6New() { const sel = document.querySelector('input[name="q6-new-answer"]:checked'); handleAnswer("stepup", sel?sel.value:"", "C", "question-page-7-new", () => startTimer(40, 'timerDisplay7New', processAnswer7New)); }
+    document.getElementById('submit-question-6-new').onclick = processAnswer6New;
 
-    document.getElementById('toggleTimerBtn3New').addEventListener('click', function() {
-        globalTimerHidden = !globalTimerHidden;
-        document.getElementById('timerDisplay3New').style.display = globalTimerHidden ? 'none' : 'block';
-        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-    });
+    // Q7
+    function processAnswer7New() { const sel = document.querySelector('input[name="q7-new-answer"]:checked'); handleAnswer("variso", sel?sel.value:"", "B", "question-page-8-new", () => startTimer(40, 'timerDisplay8New', processAnswer8New)); }
+    document.getElementById('submit-question-7-new').onclick = processAnswer7New;
 
-    document.getElementById('submit-question-3-new').addEventListener('click', processAnswer3New);
+    // Q8
+    function processAnswer8New() { const sel = document.querySelector('input[name="q8-new-answer"]:checked'); handleAnswer("avgperc", sel?sel.value:"", "C", "question-page-3", () => startTimer(40, 'timerDisplay3', processAnswer3)); }
+    document.getElementById('submit-question-8-new').onclick = processAnswer8New;
 
-    function processAnswer3New() {
-        clearInterval(timerInterval3New);
-        const selected = document.querySelector('input[name="q3-new-answer"]:checked');
-        const rawInput = selected ? selected.value : "";
-        const isCorrect = (rawInput === "C"); // Correct Answer: C (J10)
+    // Q9
+    function processAnswer3() { const sel = document.querySelector('input[name="q3-answer"]:checked'); handleAnswer("logic", sel?sel.value:"", "Sphere", "sequence-page-4", () => startTimer(40, 'timerDisplay4', processSequenceAnswer4)); }
+    document.getElementById('submit-question-3').onclick = processAnswer3;
 
-        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "baseline_3", input: rawInput, correct: isCorrect, timeLeft: timeLeft3New });
-        sessionStorage.setItem('testResults', JSON.stringify(results));
-
-        document.getElementById('question-page-3-new').style.display = 'none';
-        document.getElementById('question-page-4-new').style.display = 'block';
-        startTimer4New();
-    }
-
-    // ==========================================
-    // --- NEW: QUESTION 4 LOGIC (Intermediate Induction) ---
-    // ==========================================
-    function startTimer4New() {
-        if (globalTimerHidden) {
-            document.getElementById('timerDisplay4New').style.display = 'none';
-            document.getElementById('toggleTimerBtn4New').innerText = 'Show Timer';
-        }
-        timerInterval4New = setInterval(() => {
-            timeLeft4New--;
-            document.getElementById('timerDisplay4New').innerText = timeLeft4New + "s";
-            if (timeLeft4New <= 6) {
-                document.getElementById('timerDisplay4New').style.display = 'block';
-                document.getElementById('timerDisplay4New').classList.add('warning');
-            } else if (globalTimerHidden) {
-                document.getElementById('timerDisplay4New').style.display = 'none';
-            }
-            if (timeLeft4New <= 0) { clearInterval(timerInterval4New); processAnswer4New(); }
-        }, 1000);
-    }
-
-    document.getElementById('toggleTimerBtn4New').addEventListener('click', function() {
-        globalTimerHidden = !globalTimerHidden;
-        document.getElementById('timerDisplay4New').style.display = globalTimerHidden ? 'none' : 'block';
-        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-    });
-
-    document.getElementById('submit-question-4-new').addEventListener('click', processAnswer4New);
-
-    function processAnswer4New() {
-        clearInterval(timerInterval4New);
-        const selected = document.querySelector('input[name="q4-new-answer"]:checked');
-        const rawInput = selected ? selected.value : "";
-        const isCorrect = (rawInput === "B"); // Correct Answer: B (N11)
-
-        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "intermediate_4", input: rawInput, correct: isCorrect, timeLeft: timeLeft4New });
-        sessionStorage.setItem('testResults', JSON.stringify(results));
-
-        document.getElementById('question-page-4-new').style.display = 'none';
-        document.getElementById('question-page-5-new').style.display = 'block';
-        startTimer5New();
-    }
-
-    // ==========================================
-    // --- NEW: QUESTION 5 LOGIC (High-Range Operator) ---
-    // ==========================================
-    function startTimer5New() {
-        if (globalTimerHidden) {
-            document.getElementById('timerDisplay5New').style.display = 'none';
-            document.getElementById('toggleTimerBtn5New').innerText = 'Show Timer';
-        }
-        timerInterval5New = setInterval(() => {
-            timeLeft5New--;
-            document.getElementById('timerDisplay5New').innerText = timeLeft5New + "s";
-            if (timeLeft5New <= 6) {
-                document.getElementById('timerDisplay5New').style.display = 'block';
-                document.getElementById('timerDisplay5New').classList.add('warning');
-            } else if (globalTimerHidden) {
-                document.getElementById('timerDisplay5New').style.display = 'none';
-            }
-            if (timeLeft5New <= 0) { clearInterval(timerInterval5New); processAnswer5New(); }
-        }, 1000);
-    }
-
-    document.getElementById('toggleTimerBtn5New').addEventListener('click', function() {
-        globalTimerHidden = !globalTimerHidden;
-        document.getElementById('timerDisplay5New').style.display = globalTimerHidden ? 'none' : 'block';
-        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-    });
-
-    document.getElementById('submit-question-5-new').addEventListener('click', processAnswer5New);
-
-    function processAnswer5New() {
-        clearInterval(timerInterval5New);
-        const selected = document.querySelector('input[name="q5-new-answer"]:checked');
-        const rawInput = selected ? selected.value : "";
-        const isCorrect = (rawInput === "A"); // Correct Answer: A (55)
-
-        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "high_range_5", input: rawInput, correct: isCorrect, timeLeft: timeLeft5New });
-        sessionStorage.setItem('testResults', JSON.stringify(results));
-
-        document.getElementById('question-page-5-new').style.display = 'none';
-        document.getElementById('question-page-3').style.display = 'block'; // Jumps to Old Q3 (Which does not belong)
-        startTimer3();
-    }
-
-    // ==========================================
-    // --- QUESTION 6 LOGIC (Old Q3) ---
-    // ==========================================
-    function startTimer3() {
-        if (globalTimerHidden) {
-            document.getElementById('timerDisplay3').style.display = 'none';
-            document.getElementById('toggleTimerBtn3').innerText = 'Show Timer';
-        }
-        timerInterval3 = setInterval(() => {
-            timeLeft3--;
-            document.getElementById('timerDisplay3').innerText = timeLeft3 + "s";
-            if (timeLeft3 <= 6) {
-                document.getElementById('timerDisplay3').style.display = 'block';
-                document.getElementById('timerDisplay3').classList.add('warning');
-            } else if (globalTimerHidden) {
-                document.getElementById('timerDisplay3').style.display = 'none';
-            }
-            if (timeLeft3 <= 0) { clearInterval(timerInterval3); processAnswer3(); }
-        }, 1000);
-    }
-
-    document.getElementById('toggleTimerBtn3').addEventListener('click', function() {
-        globalTimerHidden = !globalTimerHidden;
-        document.getElementById('timerDisplay3').style.display = globalTimerHidden ? 'none' : 'block';
-        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-    });
-
-    document.getElementById('submit-question-3').addEventListener('click', processAnswer3);
-
-    function processAnswer3() {
-        clearInterval(timerInterval3); 
-        const selectedOption = document.querySelector('input[name="q3-answer"]:checked');
-        const rawInput = selectedOption ? selectedOption.value : ""; 
-        const isCorrect = (rawInput === "Sphere");
-
-        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "logic_6", input: rawInput, correct: isCorrect, timeLeft: timeLeft3 });
-        sessionStorage.setItem('testResults', JSON.stringify(results));
-        
-        document.getElementById('question-page-3').style.display = 'none';
-        document.getElementById('sequence-page-4').style.display = 'block'; 
-        startSequenceTimer4();
-    }
-
-    // ==========================================
-    // --- QUESTION 7 LOGIC (Old Q4) ---
-    // ==========================================
-    function startSequenceTimer4() {
-        if (globalTimerHidden) {
-            document.getElementById('timerDisplay4').style.display = 'none';
-            document.getElementById('toggleTimerBtn4').innerText = 'Show Timer';
-        }
-        timerInterval4 = setInterval(() => {
-            timeLeft4--;
-            document.getElementById('timerDisplay4').innerText = timeLeft4 + "s";
-            if (timeLeft4 <= 6) {
-                document.getElementById('timerDisplay4').style.display = 'block';
-                document.getElementById('timerDisplay4').classList.add('warning');
-            } else if (globalTimerHidden) {
-                document.getElementById('timerDisplay4').style.display = 'none';
-            }
-            if (timeLeft4 <= 0) { clearInterval(timerInterval4); processSequenceAnswer4(); }
-        }, 1000);
-    }
-
-    document.getElementById('toggleTimerBtn4').addEventListener('click', function() {
-        globalTimerHidden = !globalTimerHidden;
-        document.getElementById('timerDisplay4').style.display = globalTimerHidden ? 'none' : 'block';
-        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-    });
-
-    document.getElementById('submit-sequence-4').addEventListener('click', processSequenceAnswer4);
+    // Q10
+    function processSequenceAnswer4() { handleAnswer("seq4", document.getElementById('answerInput4').value, "22", "question-page-5", () => startTimer(40, 'timerDisplay5', processAnswer5)); }
+    document.getElementById('submit-sequence-4').onclick = processSequenceAnswer4;
     document.getElementById('answerInput4').addEventListener('keypress', e => { if (e.key === 'Enter') processSequenceAnswer4(); });
 
-    function processSequenceAnswer4() {
-        clearInterval(timerInterval4);
-        const raw = document.getElementById('answerInput4').value;
-        const isCorrect = (raw.replace(/\s+/g, '') === "22"); 
-
-        const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "sequence_7", input: raw, correct: isCorrect, timeLeft: timeLeft4 });
-        sessionStorage.setItem('testResults', JSON.stringify(results));
-
-        document.getElementById('sequence-page-4').style.display = 'none';
-        document.getElementById('question-page-5').style.display = 'block'; 
-        startTimer5();
-    }
-
-    // ==========================================
-    // --- QUESTION 8 LOGIC (Old Q5 / Matrix) ---
-    // ==========================================
-    function startTimer5() {
-        if (globalTimerHidden) {
-            document.getElementById('timerDisplay5').style.display = 'none';
-            document.getElementById('toggleTimerBtn5').innerText = 'Show Timer';
-        }
-        timerInterval5 = setInterval(() => {
-            timeLeft5--;
-            document.getElementById('timerDisplay5').innerText = timeLeft5 + "s";
-            if (timeLeft5 <= 6) {
-                document.getElementById('timerDisplay5').style.display = 'block';
-                document.getElementById('timerDisplay5').classList.add('warning');
-            } else if (globalTimerHidden) {
-                document.getElementById('timerDisplay5').style.display = 'none';
-            }
-            if (timeLeft5 <= 0) { clearInterval(timerInterval5); processAnswer5(); }
-        }, 1000);
-    }
-
-    document.getElementById('toggleTimerBtn5').addEventListener('click', function() {
-        globalTimerHidden = !globalTimerHidden;
-        document.getElementById('timerDisplay5').style.display = globalTimerHidden ? 'none' : 'block';
-        this.innerText = globalTimerHidden ? 'Show Timer' : 'Hide Timer';
-    });
-
-    document.getElementById('submit-question-5').addEventListener('click', processAnswer5);
-
+    // Q11 (Final)
     function processAnswer5() {
-        clearInterval(timerInterval5); 
-        const selectedOption = document.querySelector('input[name="q5-answer"]:checked');
-        const rawInput = selectedOption ? selectedOption.value : ""; 
-        const isCorrect = (rawInput === "A");
-
+        if (currentTimerInterval) clearInterval(currentTimerInterval);
+        const sel = document.querySelector('input[name="q5-answer"]:checked');
         const results = JSON.parse(sessionStorage.getItem('testResults') || "[]");
-        results.push({ question: "matrix_8", input: rawInput, correct: isCorrect, timeLeft: timeLeft5 });
-        sessionStorage.setItem('testResults', JSON.stringify(results));
+        results.push({ qId: "matrix", input: sel?sel.value:"", correct: (sel?sel.value:"") === "A" });
+        
+        const finalScore = results.filter(r => r.correct).length;
+        
+        fetch('https://pc-iq-test.onrender.com/submit-results', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ username: globalUsername, testResults: results, totalScore: finalScore }) 
+        }).then(() => showLeaderboard(finalScore));
+    }
+    document.getElementById('submit-question-5').onclick = processAnswer5;
 
-        // --- FINAL SUBMISSION LOGIC (Graded out of 8) ---
-        const totalScore = results.filter(answer => answer.correct).length;
-        const totalTimeSaved = results.reduce((sum, answer) => sum + answer.timeLeft, 0);
-
-        fetch('https://pc-iq-test.onrender.com/submit-results', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                username: globalUsername,
-                testResults: results,
-                totalScore: totalScore,
-                timeLeftTotal: totalTimeSaved
-            })
-        }).finally(() => {
-            showLeaderboard(totalScore);
+    // --- LEADERBOARD & UI ---
+    function showLeaderboard(userScore) {
+        document.querySelectorAll('.welcome-card > div').forEach(div => div.style.display = 'none');
+        document.getElementById('final-page').style.display = 'block';
+        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 11`;
+        
+        fetch('https://pc-iq-test.onrender.com/leaderboard').then(res => res.json()).then(allUsers => {
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = allUsers.map((u, index) => {
+                const style = u.username === globalUsername ? 'font-weight: bold; color: #3498db; background: #ebf5fb; padding: 5px;' : 'padding: 5px 0;';
+                return `<li style="border-bottom: 1px solid #eee; ${style}"><strong>#${index + 1}</strong> - ${u.username}: ${u.totalScore} pts</li>`;
+            }).join('');
         });
     }
-</script>
 
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.onclick = function() {
+            globalTimerHidden = !globalTimerHidden;
+            document.querySelectorAll('.timer').forEach(t => {
+                if (!t.classList.contains('warning')) {
+                    t.style.display = globalTimerHidden ? 'none' : 'block';
+                }
+            });
+            document.querySelectorAll('.toggle-btn').forEach(b => b.innerText = globalTimerHidden ? "Show Timer" : "Hide Timer");
+        };
+    });
+</script>
 </body>
 </html>
