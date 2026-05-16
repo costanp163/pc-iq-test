@@ -530,40 +530,6 @@
         <button id="submit-scale-2">Next</button>
     </div>
 
-    <!-- Q19: Scale Balance 3 -->
-    <div id="question-page-scale-3" style="display: none;">
-        <header class="top-bar">
-            <button class="toggle-btn">Hide Timer</button>
-            <div id="timerDisplayScale3" class="timer">40s</div>
-        </header>
-        <h2 style="font-size: 1.2rem;">Which option balances the final scale?</h2>
-        
-        <div style="margin-bottom: 20px;">
-            <!-- REPLACE THIS LINK WITH YOUR MAIN PROBLEM IMAGE -->
-            <img src="https://via.placeholder.com/400x200?text=Paste+Main+Scale+Image+Here" alt="Scale Problem 3" class="scale-main-img">
-        </div>
-
-        <div class="options-container">
-            <label class="radio-option scale-choice">
-                <!-- REPLACE THESE LINKS WITH YOUR 4 ANSWER IMAGES -->
-                <img src="https://via.placeholder.com/150?text=Option+A" alt="Choice A">
-                <input type="radio" name="q-scale-3" value="A">
-            </label>
-            <label class="radio-option scale-choice">
-                <img src="https://via.placeholder.com/150?text=Option+B" alt="Choice B">
-                <input type="radio" name="q-scale-3" value="B">
-            </label>
-            <label class="radio-option scale-choice">
-                <img src="https://via.placeholder.com/150?text=Option+C" alt="Choice C">
-                <input type="radio" name="q-scale-3" value="C">
-            </label>
-            <label class="radio-option scale-choice">
-                <img src="https://via.placeholder.com/150?text=Option+D" alt="Choice D">
-                <input type="radio" name="q-scale-3" value="D">
-            </label>
-        </div>
-        <button id="submit-scale-3">Next</button>
-    </div>
 
     <!-- Q20: Matrix (Final) -->
     <div id="question-page-5" style="display: none;">
@@ -589,7 +555,7 @@
     <!-- Final Page -->
     <div id="final-page" style="display:none;">
         <h1>Test Complete!</h1>
-        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 20</h2>
+        <h2 id="final-score-display" style="color: #3498db; font-size: 2rem; margin: 15px 0;">Your Score: 0 / 19</h2>
         <div style="background: #f8f9fa; border: 1px solid #ccc; border-radius: 6px; padding: 15px; margin-top: 20px;">
             <h3 style="color: #2c3e50; margin-bottom: 10px;">Global Leaderboard</h3>
             <ul id="leaderboard-list" style="list-style-type: none; padding: 0; text-align: left; margin: 0; max-height: 200px; overflow-y: auto;"></ul>
@@ -626,7 +592,7 @@
     function showLeaderboard(userScore) {
         document.querySelectorAll('.welcome-card > div').forEach(div => div.style.display = 'none');
         document.getElementById('final-page').style.display = 'block';
-        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 20`;
+        document.getElementById('final-score-display').innerText = `Your Score: ${userScore} / 19`;
         fetch('https://pc-iq-test.onrender.com/leaderboard').then(res => res.json()).then(allUsers => {
             const list = document.getElementById('leaderboard-list');
             list.innerHTML = allUsers.map((u, index) => {
@@ -763,19 +729,13 @@
         handleAnswer("scale1", sel?sel.value:"", "D", "question-page-scale-2", () => startTimer(40, 'timerDisplayScale2', processAnswerScale2)); 
     } // <-- Change "A" if a different option is correct
 
-    // Q18 (Scale 2)
+   // Q18 (Scale 2)
     document.getElementById('submit-scale-2').onclick = processAnswerScale2;
     function processAnswerScale2() { 
         const sel = document.querySelector('input[name="q-scale-2"]:checked'); 
-        handleAnswer("scale2", sel?sel.value:"", "A", "question-page-scale-3", () => startTimer(40, 'timerDisplayScale3', processAnswerScale3)); 
+        handleAnswer("scale2", sel?sel.value:"", "A", "question-page-5", () => startTimer(40, 'timerDisplay5', processAnswer5)); 
     } // <-- Change "A" if a different option is correct
 
-    // Q19 (Scale 3)
-    document.getElementById('submit-scale-3').onclick = processAnswerScale3;
-    function processAnswerScale3() { 
-        const sel = document.querySelector('input[name="q-scale-3"]:checked'); 
-        handleAnswer("scale3", sel?sel.value:"", "A", "question-page-5", () => startTimer(40, 'timerDisplay5', processAnswer5)); 
-    } // <-- Change "A" if a different option is correct
 
     // Q20 (Final Matrix)
     document.getElementById('submit-question-5').onclick = processAnswer5;
