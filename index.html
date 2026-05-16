@@ -67,7 +67,7 @@
             transition: background 0.3s ease;
         }
 
-        button:hover {
+        button:hover:not(:disabled) {
             background-color: #2980b9;
         }
 
@@ -723,11 +723,29 @@
         const usernameInput = document.getElementById('username').value.trim();
         if (!usernameInput) { alert("Please enter a username."); return; }
         globalUsername = usernameInput; 
+
+        // Apply loading state
+        const btn = document.getElementById('btn-login');
+        const originalText = btn.innerText;
+        btn.innerText = "Loading... (Waking server)";
+        btn.disabled = true;
+        btn.style.opacity = "0.7";
+        btn.style.cursor = "wait";
+
         fetch('https://pc-iq-test.onrender.com/login-or-register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: globalUsername })
-        }).then(res => res.json()).then(data => {
+        }).then(res => {
+            if (!res.ok) throw new Error("Network response was not ok");
+            return res.json();
+        }).then(data => {
+            // Reset button state
+            btn.innerText = originalText;
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+
             if (data.status === 'exists' && data.user.testResults && data.user.testResults.length > 0) {
                 showLeaderboard(data.user.totalScore);
             } else {
@@ -735,6 +753,14 @@
                 document.getElementById('screen-welcome').style.display = 'none';
                 document.getElementById('screen-demographics').style.display = 'block';
             }
+        }).catch(err => {
+            // Reset button state on error
+            btn.innerText = originalText;
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+            alert("Connection timed out or failed. The server might still be waking up (can take up to 50 seconds). Please try again.");
+            console.error(err);
         });
     });
 
